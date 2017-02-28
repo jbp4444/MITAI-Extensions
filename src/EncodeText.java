@@ -12,6 +12,7 @@ import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 
 // the AppInventor class ...
 
@@ -32,53 +33,69 @@ public final class EncodeText extends AndroidNonvisibleComponent {
   }
 
   @SimpleFunction(description = "Encode a string in Base64" )
-  public String ToBase64 ( String input ) {
+  public String ToBase64( String input ) {
     // NOTE: getBytes needs a char-set (default='utf-8')
-    byte b[] = { 'E','R','R','O','R' };
+    String rtn = "ERROR";
     try {
-      b = Base64.encodeBase64( input.getBytes(DEFAULT_ENCODING) );
+      rtn = Base64.encodeBase64String( input.getBytes(DEFAULT_ENCODING) );
     } catch( Exception e ) {
       // TODO: throw an error
     }
-    return( new String(b) );
+    return( rtn );
   }
 
   @SimpleFunction(description = "Decode a Base64 string" )
-  public String FromBase64 ( String input ) {
-    byte b[] = { 'E','R','R','O','R' };
-    // NOTE: getBytes needs a char-set (default='utf-8')
-    try {
-      b = Base64.decodeBase64( input.getBytes(DEFAULT_ENCODING) );
-    } catch( Exception e ) {
-      // TODO: throw an error
-    }
+  public String FromBase64( String input ) {
+    byte b[] = Base64.decodeBase64( input );
     return( new String(b) );
   }
 
   @SimpleFunction(description = "Encode a string in hex" )
-  public String ToHex ( String input ) {
-    //byte b[] = { 'E','R','R','O','R' };
-    char b[] = { 'E','R','R','O','R' };
+  public String ToHex( String input ) {
+    String rtn = "ERROR";
     // NOTE: getBytes needs a char-set (default='utf-8')
     try {
-      b = Hex.encodeHex( input.getBytes(DEFAULT_ENCODING) );
+      rtn = Hex.encodeHexString( input.getBytes(DEFAULT_ENCODING) );
     } catch( Exception e ) {
       // TODO: throw an error
     }
-    return( new String(b) );
+    return( rtn );
   }
  
   @SimpleFunction(description = "Decode a hex string" )
-  public String FromHex ( String input ) {
-    byte b[] = { 'E','R','R','O','R' };
-    // NOTE: getBytes needs a char-set (default='utf-8')
+  public String FromHex( String input ) {
+    String rtn = "ERROR";
     try {
-      //b = Hex.decodeHex( input.getBytes(DEFAULT_ENCODING) );
-      b = Hex.decodeHex( input.toCharArray() );
+      byte b[] = Hex.decodeHex( input.toCharArray() );
+      rtn = new String(b);
     } catch( Exception e ) {
       // TODO: throw an error
     }
-    return( new String(b) );
+    return( rtn );
+  }
+
+  @SimpleFunction(description = "Return the MD5 hash of a string" )
+  public String ToMD5( String input ) {
+    String rtn = DigestUtils.md5Hex( input );
+    return( rtn );
+  }
+
+  @SimpleFunction(description = "Return the SHA-1 hash of a string" )
+  public String ToSHA1( String input ) {
+    String rtn = DigestUtils.sha1Hex( input );
+    return( rtn );
+  }
+
+  @SimpleFunction(description = "Return the SHA-256 hash of a string" )
+  public String ToSHA256( String input ) {
+    String rtn = DigestUtils.sha256Hex( input );
+    return( rtn );
+  }
+
+  @SimpleFunction(description = "Return the SHA-512 hash of a string" )
+  public String ToSHA512( String input ) {
+    String rtn = DigestUtils.sha512Hex( input );
+    return( rtn );
   }
 
 }
