@@ -28,15 +28,13 @@ import org.json.JSONException;
     category = ComponentCategory.EXTENSION,
     nonVisible = true,
     iconName = "images/extension.png")
-
 @SimpleObject( external=true )
 public class JsonFileDB extends AndroidNonvisibleComponent {
 
   public static final int VERSION = 1;
-
   private static String valueIfTagNotThere = "__NULL__";
-
   private JSONObject mainDB;
+  public static String status = "Not initialized";
 
   public JsonFileDB(ComponentContainer container) {
     super(container.$form());
@@ -66,11 +64,18 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
   }
 
   @SimpleFunction( description="Load the DB from a JSON file" )
+  public String GetStatus() {
+    return new String(status);
+  }
+
+  @SimpleFunction( description="Load the DB from a JSON file" )
   public void LoadDBFile( final String filename ) {
     try {
+      status = "Initializing DB";
       readJsonFile( filename );
     } catch( Exception e ) {
       // TODO: throw an error?
+      status = "Could not initialize DB";
     }
   }
 
@@ -81,6 +86,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
       rtn = mainDB.getString( tag1 );
     } catch( Exception e ) {
       rtn = valueIfTagNotThere;
+      status = "GetValue1 threw an error";
     }
     return rtn;
   }
@@ -95,6 +101,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
       rtn = obj1.getString( tag2 );
     } catch( Exception e ) {
       //rtn = valueIfTagNotThere;
+      status = "GetValue2 threw an error";
     }
     return rtn;
   }
@@ -111,6 +118,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
       rtn = obj2.getString( tag3 );
     } catch( Exception e ) {
       //rtn = valueIfTagNotThere;
+      status = "GetValue3 threw an error";
     }
     return rtn;
   }
@@ -124,7 +132,8 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
       JSONObject obj3 = obj2.getJSONObject( tag3 );
       rtn = obj3.getString( tag4 );
     } catch( Exception e ) {
-      rtn = valueIfTagNotThere;
+      //rtn = valueIfTagNotThere;
+      status = "GetValue4 threw an error";
     }
     return rtn;
   }
