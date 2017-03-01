@@ -58,8 +58,11 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
       fullFilename = filename;
     }
 
+    status = "FileUtil.readfile";
     byte b[] = FileUtil.readFile( fullFilename );
+    status = "new String";
     String contents = new String(b,"utf-8");
+    status = "new JSONObject";
     mainDB = new JSONObject(contents);
   }
 
@@ -75,7 +78,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
       readJsonFile( filename );
     } catch( Exception e ) {
       // TODO: throw an error?
-      status = "Could not initialize DB";
+      //status = "Could not initialize DB";
     }
   }
 
