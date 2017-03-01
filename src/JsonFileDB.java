@@ -63,7 +63,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
     mainDB = new JSONObject(contents);
   }
 
-  @SimpleFunction( description="Load the DB from a JSON file" )
+  @SimpleFunction( description="Return status info" )
   public String GetStatus() {
     return new String(status);
   }
