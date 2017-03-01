@@ -16,7 +16,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 // the AppInventor class ...
 
-@DesignerComponent(version = YaVersion.LABEL_COMPONENT_VERSION,
+@DesignerComponent(version = EncodeText.VERSION,
   description = "This extension provides Base64 text encoding and decoding functions",
   category = ComponentCategory.EXTENSION,
   nonVisible = true,
@@ -25,6 +25,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 @SimpleObject( external=true )
 public final class EncodeText extends AndroidNonvisibleComponent {
 
+  public static final int VERSION = 1;
   // default encoding is UTF-8
   public static final String DEFAULT_ENCODING = "UTF-8";
 
