@@ -10,13 +10,15 @@ import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 import com.google.appinventor.components.runtime.util.JsonUtil;
+import com.google.appinventor.components.runtime.util.FileUtil;
+
+import android.os.Environment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.io.File;
-import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -40,11 +42,27 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
     super(container.$form());
   }
 
+  //private void readJsonFile( String filename ) throws Exception {
+  //  File file = new File(filename);
+  //  String contents = FileUtils.readFileToString(file,"utf-8");
+  //  // convert to JSON
+  //  mainDB = new JSONObject(contents); 
+  //}
+
+  // borrowing heavily from File component, ReadFrom
   private void readJsonFile( String filename ) throws Exception {
-    File file = new File(filename);
-    String contents = FileUtils.readFileToString(file,"utf-8");
-    // convert to JSON
-    mainDB = new JSONObject(contents); 
+    String fullFilename;
+    if( filename.startsWith("//") ) {
+      fullFilename = Environment.getExternalStorageDirectory().getPath() + "/AppInventor/assets/" + filename;
+    } else if( filename.startsWith("/") ) {
+      fullFilename = Environment.getExternalStorageDirectory().getPath() + filename;
+    } else {
+      fullFilename = filename;
+    }
+
+    byte b[] = FileUtil.readFile( fullFilename );
+    String contents = new String(b,"utf-8");
+    mainDB = new JSONObject(contents);
   }
 
   @SimpleFunction( description="Load the DB from a JSON file" )
