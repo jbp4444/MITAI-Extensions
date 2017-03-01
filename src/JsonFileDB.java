@@ -62,7 +62,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
     byte b[] = FileUtil.readFile( fullFilename );
     status = "new String";
     String contents = new String(b,"utf-8");
-    status = "new JSONObject";
+    status = contents;
     mainDB = new JSONObject(contents);
   }
 
