@@ -89,10 +89,12 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
   public String GetValue2( String tag1, String tag2 ) {
     String rtn = "ERROR";
     try {
+      rtn = "GetValue2-tag1";
       JSONObject obj1 = mainDB.getJSONObject( tag1 );
+      rtn = "GetValue2-tag1-returned";
       rtn = obj1.getString( tag2 );
     } catch( Exception e ) {
-      rtn = valueIfTagNotThere;
+      //rtn = valueIfTagNotThere;
     }
     return rtn;
   }
@@ -101,11 +103,14 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
   public String GetValue3( String tag1, String tag2, String tag3 ) {
     String rtn = "ERROR";
     try {
+      rtn = "GetValue3-tag1";
       JSONObject obj1 = mainDB.getJSONObject( tag1 );
+      rtn = "GetValue3-tag2";
       JSONObject obj2 = obj1.getJSONObject( tag2 );
+      rtn = "GetValue3-tag2-returned";
       rtn = obj2.getString( tag3 );
     } catch( Exception e ) {
-      rtn = valueIfTagNotThere;
+      //rtn = valueIfTagNotThere;
     }
     return rtn;
   }
