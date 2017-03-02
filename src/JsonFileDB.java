@@ -35,6 +35,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
   private static String valueIfTagNotThere = "__NULL__";
   private JSONObject mainDB;
   public static String status = "Not initialized";
+  public static String altstatus = "Not initialized";
 
   public JsonFileDB(ComponentContainer container) {
     super(container.$form());
@@ -64,11 +65,17 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
     String contents = new String(b,"utf-8");
     status = contents;
     mainDB = new JSONObject(contents);
+    altstatus = "mainDB is initialized";
   }
 
   @SimpleFunction( description="Return status info" )
   public String GetStatus() {
     return new String(status);
+  }
+
+  @SimpleFunction( description="Return alt-status info" )
+  public String GetAltStatus() {
+    return new String(altstatus);
   }
 
   @SimpleFunction( description="Load the DB from a JSON file" )
