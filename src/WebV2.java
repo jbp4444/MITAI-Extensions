@@ -993,8 +993,8 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
   private void processResponseCookies(HttpURLConnection connection) {
 	int i = 0;
 	while( true ) {
-		String hdr_type = cnx.getHeaderFieldKey(i);
-		String hdr_value = cnx.getHeaderField(i);
+		String hdr_type = connection.getHeaderFieldKey(i);
+		String hdr_value = connection.getHeaderField(i);
 		ArrayList<ArrayList<String>> newobj = new ArrayList<ArrayList<String>>();
 
 		if( (hdr_type==null) && (hdr_value==null) ) {
