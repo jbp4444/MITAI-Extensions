@@ -65,10 +65,10 @@ import java.util.Map;
  */
 @DesignerComponent(version = YaVersion.WEB_COMPONENT_VERSION,
     description = "Non-visible component that provides functions for HTTP GET, POST, PUT, and DELETE requests.",
-    category = ComponentCategory.CONNECTIVITY,
+    category = ComponentCategory.EXTENSION,
     nonVisible = true,
     iconName = "images/web.png")
-@SimpleObject
+@SimpleObject( external=true )
 @UsesPermissions(permissionNames = "android.permission.INTERNET," +
   "android.permission.WRITE_EXTERNAL_STORAGE," +
   "android.permission.READ_EXTERNAL_STORAGE")
@@ -371,11 +371,11 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
         try {
           performRequest(webProps, null, null, "GET");
         } catch (FileUtil.FileException e) {
-          form.dispatchErrorOccurredEvent(Web.this, "Get",
+          form.dispatchErrorOccurredEvent(WebV2.this, "Get",
               e.getErrorMessageNumber());
         } catch (Exception e) {
           Log.e(LOG_TAG, "ERROR_UNABLE_TO_GET", e);
-          form.dispatchErrorOccurredEvent(Web.this, "Get",
+          form.dispatchErrorOccurredEvent(WebV2.this, "Get",
               ErrorMessages.ERROR_WEB_UNABLE_TO_GET, webProps.urlString);
         }
       }
@@ -442,10 +442,10 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
         try {
           performRequest(webProps, null, path, "POST");
         } catch (FileUtil.FileException e) {
-          form.dispatchErrorOccurredEvent(Web.this, "PostFile",
+          form.dispatchErrorOccurredEvent(WebV2.this, "PostFile",
               e.getErrorMessageNumber());
         } catch (Exception e) {
-          form.dispatchErrorOccurredEvent(Web.this, "PostFile",
+          form.dispatchErrorOccurredEvent(WebV2.this, "PostFile",
               ErrorMessages.ERROR_WEB_UNABLE_TO_POST_OR_PUT_FILE, path, webProps.urlString);
         }
       }
@@ -512,10 +512,10 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
         try {
           performRequest(webProps, null, path, "PUT");
         } catch (FileUtil.FileException e) {
-          form.dispatchErrorOccurredEvent(Web.this, "PutFile",
+          form.dispatchErrorOccurredEvent(WebV2.this, "PutFile",
               e.getErrorMessageNumber());
         } catch (Exception e) {
-          form.dispatchErrorOccurredEvent(Web.this, "PutFile",
+          form.dispatchErrorOccurredEvent(WebV2.this, "PutFile",
               ErrorMessages.ERROR_WEB_UNABLE_TO_POST_OR_PUT_FILE, path, webProps.urlString);
         }
       }
@@ -546,10 +546,10 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
         try {
           performRequest(webProps, null, null, "DELETE");
         } catch (FileUtil.FileException e) {
-          form.dispatchErrorOccurredEvent(Web.this, "Delete",
+          form.dispatchErrorOccurredEvent(WebV2.this, "Delete",
               e.getErrorMessageNumber());
         } catch (Exception e) {
-          form.dispatchErrorOccurredEvent(Web.this, "Delete",
+          form.dispatchErrorOccurredEvent(WebV2.this, "Delete",
               ErrorMessages.ERROR_WEB_UNABLE_TO_DELETE, webProps.urlString);
         }
       }
@@ -593,7 +593,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
             requestData = text.getBytes(encoding);
           }
         } catch (UnsupportedEncodingException e) {
-          form.dispatchErrorOccurredEvent(Web.this, functionName,
+          form.dispatchErrorOccurredEvent(WebV2.this, functionName,
               ErrorMessages.ERROR_WEB_UNSUPPORTED_ENCODING, encoding);
           return;
         }
@@ -601,10 +601,10 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
         try {
           performRequest(webProps, requestData, null, httpVerb);
         } catch (FileUtil.FileException e) {
-          form.dispatchErrorOccurredEvent(Web.this, functionName,
+          form.dispatchErrorOccurredEvent(WebV2.this, functionName,
               e.getErrorMessageNumber());
         } catch (Exception e) {
-          form.dispatchErrorOccurredEvent(Web.this, functionName,
+          form.dispatchErrorOccurredEvent(WebV2.this, functionName,
               ErrorMessages.ERROR_WEB_UNABLE_TO_POST_OR_PUT, text, webProps.urlString);
         }
       }
