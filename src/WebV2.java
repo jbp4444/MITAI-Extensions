@@ -1013,7 +1013,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
 			break;
 		}
 	}
-	responseHeaders = new YailList(newobj);
+	responseHeaders = YailList.makeList(newobj);
 
     if (allowCookies && cookieHandler != null) {
       try {
