@@ -135,7 +135,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
     final Map<String, List<String>> requestHeaders;
     final Map<String, List<String>> cookies;
 
-    CapturedProperties(Web web) throws MalformedURLException, InvalidRequestHeadersException {
+    CapturedProperties(WebV2 web) throws MalformedURLException, InvalidRequestHeadersException {
       urlString = web.urlString;
       url = new URL(urlString);
       allowCookies = web.allowCookies;
