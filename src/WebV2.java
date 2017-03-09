@@ -204,7 +204,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
   /**
    * This constructor is for testing purposes only.
    */
-  protected Web() {
+  protected WebV2() {
     super(null);
     activity = null;
     cookieHandler = null;
