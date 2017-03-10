@@ -183,7 +183,8 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
   private String urlString = "";
   private boolean allowCookies;
   private YailList requestHeaders = new YailList();
-  private YailList responseHeaders = new YailList();
+  //private YailList responseHeaders = new YailList();
+  private ArrayList<ArrayList<String>> responseHeaders = new ArrayList<ArrayList<String>>;
   private boolean saveResponse;
   private String responseFileName = "";
 
@@ -237,7 +238,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
       "of each sublist represents the header field name. The second element of each " +
       "sublist represents the header field values, either a single value or a list " +
       "containing multiple values.")
-  public YailList ResponseHeaders() {
+  public ArrayList<ArrayList<String>> ResponseHeaders() {
     return responseHeaders;
   }
 
@@ -1013,7 +1014,8 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
 			break;
 		}
 	}
-	responseHeaders = YailList.makeList(newobj);
+	//responseHeaders = YailList.makeList(newobj);
+	responseHeaders = newobj;
 
     if (allowCookies && cookieHandler != null) {
       try {
