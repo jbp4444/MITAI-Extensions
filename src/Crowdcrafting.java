@@ -24,6 +24,7 @@ import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.components.runtime.util.AsynchUtil;
+import com.google.appinventor.components.runtime.util.JsonUtil;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
 import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 
@@ -177,6 +178,17 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	@SimpleProperty
 	public void TaskID( String x ) {
 		StoreValue( "task_id", x );
+	}
+
+	@SimpleFunction(description = "Converts a JSON-string to an AppInventor object" )
+	public Object JsonToPairs( String jsonText ) {
+		try {
+			return JsonUtil.getObjectFromJson(jsonText);
+		} catch ( Exception e ) {
+			form.dispatchErrorOccurredEvent(this, "JsonToPairs",
+			ErrorMessages.ERROR_WEB_JSON_TEXT_DECODE_FAILED, jsonText);
+			return "";
+		}
 	}
 
 	// start the 2-phase login process
