@@ -9,9 +9,10 @@
 package com.google.appinventor.components.runtime;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import com.google.appinventor.components.annotations.UsesPermissions;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
 import com.google.appinventor.components.annotations.PropertyCategory;
@@ -24,6 +25,8 @@ import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.components.runtime.util.AsynchUtil;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
+import com.google.appinventor.components.runtime.util.JsonUtil;
+import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -45,7 +48,8 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	public static final int VERSION = 1;
 
-	private final Activity activity;
+	private final Context context;
+	private final SharedPreferences sharedPreferences;
 
 	private static final String base_acct_url = "http://crowdcrafting.org/account/";
 	private static final String base_api_url = "http://crowdcrafting.org/api/";
@@ -56,118 +60,121 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	private static final int H_REMEMBER = 8;
 	private static final int H_JSON     = 16;
 
-	private String api_key = "b5374c06-83f1-4b66-adbd-51c817445b26";
-	private String session_token = "none";
-	private String csrf_token = "none";
-	private String remember_token = "none";
-
-	private String username = "jbp@pormann.net";
-	private String password = "Ss2I5v0dXl";
-	private String project_id = "4670";  //"4500";
-	private String task_id = "0";
-
 	private String last_status = "not initialized";
 
-  /**
-   * Creates a new component.
-   *
-   * @param container  container, component will be placed in
-   */
-  public Crowdcrafting( ComponentContainer container ) {
-    super(container.$form());
+	// Constructor
+	public Crowdcrafting( ComponentContainer container ) {
+		super(container.$form());
 
-    // Set up the Tagline in the 'About' screen
-    //form.setCrowdcraftingTagline();
+		// Set up the Tagline in the 'About' screen
+		//form.setCrowdcraftingTagline();
 
-    activity = container.$context();
-  }
+		context = container.$context();
+		sharedPreferences = context.getSharedPreferences("Crowdcrafting",Context.MODE_PRIVATE);
+	}
 
-  // getter methods for status, session, csrf, remember
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The status of the last network request")
-  public String Status() {
-	return last_status;
-  }
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The value of the CSRF Token")
-  public String CsrfToken() {
-	return csrf_token;
-  }
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The value of the Session token")
-  public String SessionToken() {
-	return session_token;
-  }
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The value of the Remember token")
-  public String RememberToken() {
-	return remember_token;
-  }
+	// getter/setter methods for status, session, csrf, remember, etc.
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The status of the last network request")
+	public String Status() {
+		return last_status;
+	}
 
-  // getter/setter methods for api_key
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The API Key for Crowdcrafting.org")
-  public String apiKey() {
-	return api_key;
-  }
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
-      defaultValue = "")
-  @SimpleProperty
-  public void apiKey( String ak ) {
-	api_key = ak;
-  }
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The value of the CSRF Token")
+	public String CsrfToken() {
+		return GetValue( "csrf_token", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void CsrfToken( String x ) {
+		StoreValue( "csrf_token", x );
+	}
 
-  // getter/setter methods for username
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The user's email/username for Crowdcrafting.org")
-  public String Username() {
-	return username;
-  }
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
-      defaultValue = "")
-  @SimpleProperty
-  public void Username( String un ) {
-	username = un;
-  }
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The value of the Session Token")
+	public String SessionToken() {
+		return GetValue( "session_token", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void SessionToken( String x ) {
+		StoreValue( "session_token", x );
+	}
 
-  // getter/setter methods for password
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The user's password for Crowdcrafting.org")
-  public String Password() {
-	return password;
-  }
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
-      defaultValue = "")
-  @SimpleProperty
-  public void Password( String pw ) {
-	password = pw;
-  }
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The value of the Remember Token")
+	public String RememberToken() {
+		return GetValue( "remember_token", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void RememberToken( String x ) {
+		StoreValue( "remember_token", x );
+	}
 
-  // getter/setter methods for project_id
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The project ID from Crowdcrafting.org")
-  public String projectID() {
-	return project_id;
-  }
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
-      defaultValue = "")
-  @SimpleProperty
-  public void projectID( String id ) {
-	project_id = id;
-  }
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The value of the API Key")
+	public String ApiKey() {
+		return GetValue( "api_key", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void ApiKey( String x ) {
+		StoreValue( "api_key", x );
+	}
 
-  // getter/setter methods for task_id
-  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
-      description = "The current task ID from Crowdcrafting.org")
-  public String taskID() {
-	return task_id;
-  }
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
-      defaultValue = "")
-  @SimpleProperty
-  public void taskID( String id ) {
-	task_id = id;
-  }
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The email/username for the current user")
+	public String Username() {
+		return GetValue( "username", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void Username( String x ) {
+		StoreValue( "username", x );
+	}
+
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The password for the current user")
+	public String Password() {
+		return GetValue( "password", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void Password( String x ) {
+		StoreValue( "password", x );
+	}
+
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The project-ID for the current project")
+	public String ProjectID() {
+		return GetValue( "project_id", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void ProjectID( String x ) {
+		StoreValue( "project_id", x );
+	}
+
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
+		description = "The task-ID for the current task")
+	public String TaskID() {
+		return GetValue( "task_id", "none" );
+	}
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+		defaultValue = "")
+	@SimpleProperty
+	public void TaskID( String x ) {
+		StoreValue( "task_id", x );
+	}
 
 	// start the 2-phase login process
 	@SimpleFunction(description = "Login to the Crowdcrafting services")
@@ -197,12 +204,13 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		int csrf_j = response.indexOf( "\"", csrf_i+5 );
 		int csrf_k = response.indexOf( "\"", csrf_j+1 );
 		csrf_token = response.substring(csrf_j+1,csrf_k);
-		//System.out.println( "phase1 - found csrf token" );
-		//System.out.println( "i="+csrf_i+" j="+csrf_j+" k="+csrf_k+" ["+csrf_token+"]" );
+		StoreValue( "csrf_token", csrf_token );
 
 		last_status = "starting phase-2 of login";
 		url = base_acct_url + "signin";
 		// send the post data
+		String username = GetValue( "username", "none" );
+		String password = GetValue( "password", "none" );
 		String jsondata = "{ \"email\": \""+username+"\", \"password\": \""+password+"\" }";
 		response = performRequest( "login2", url, jsondata, H_JSON|H_CSRF|H_SESSION );
 	}
@@ -262,6 +270,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	private void do_getnexttask() throws IOException, JSONException {
 		// TODO: make sure project_id is not null or zero
+		String project_id = GetValue( "project_id", "0" );
 		String url = base_api_url + "project/" + project_id + "/newtask";
 		String response = performRequest( "nexttask", url, null, H_JSON|H_SESSION|H_REMEMBER );
 	}
@@ -294,6 +303,8 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		String url = base_api_url + "/taskrun";
 		// TODO: make sure task_id is not null or zero
 		// TODO: make sure project_id is not null or zero
+		String project_id = GetValue( "project_id", "0" );
+		String task_id    = GetValue( "task_id", "0" );
 		String jsondata = "{ \"project_id\": " + project_id + ", "
 			+ "\"task_id\": " + task_id + ", "
 			+ "\"info\": \"999\" "
@@ -311,6 +322,28 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	  //  //  //  //  //  //  //  //  //  //  //  //  //  //
 	//  //  //  //  //  //  //  //  //  //  //  //  //  //  //
 
+	// taken from TinyDB.java in main source code
+	public void StoreValue(final String tag, final Object valueToStore) {
+      final SharedPreferences.Editor sharedPrefsEditor = sharedPreferences.edit();
+      try {
+        sharedPrefsEditor.putString(tag, JsonUtil.getJsonRepresentation(valueToStore));
+        sharedPrefsEditor.commit();
+      } catch (JSONException e) {
+        //throw new YailRuntimeError("Value failed to convert to JSON.", "JSON Creation Error.");
+      }
+    }
+	public Object GetValue(final String tag, final Object valueIfTagNotThere) {
+      try {
+        String value = sharedPreferences.getString(tag, "");
+        // If there's no entry with tag as a key then return the empty string.
+        //    was  return (value.length() == 0) ? "" : JsonUtil.getObjectFromJson(value);
+        return (value.length() == 0) ? valueIfTagNotThere : JsonUtil.getObjectFromJson(value);
+      } catch (JSONException e) {
+        //throw new YailRuntimeError("Value failed to convert from JSON.", "JSON Creation Error.");
+		return new String("Value failed to convert from JSON" );
+      }
+    }
+
 	// helper function to catch Set-Cookie response headers
 	private void parseHeaders( HttpURLConnection cnx ) {
 	  int i = 0;
@@ -327,10 +360,12 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				  //System.out.println( "Found Cookie" );
 				  if( hdr_value.startsWith("session=") ) {
 					  //System.out.println( "-- found session token" );
-					  session_token = hdr_value;
+					  //session_token = hdr_value;
+					  StoreValue( "session_token", hdr_value );
 				  } else if( hdr_value.startsWith("remember_token=") ) {
 					  //System.out.println( "-- found remember token" );
-					  remember_token = hdr_value;
+					  //remember_token = hdr_value;
+					  StoreValue( "remember_token", hdr_value );
 				  }
 			  }
 		  }
@@ -390,6 +425,10 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			httpVerb = "POST";
 			// TODO: make sure data is not null
 		}
+
+		String csrf_token     = GetValue( "csrf_token", "none" );
+		String session_token  = GetValue( "session_token", "none" );
+		String remember_token = GetValue( "remember_token", "none" );
 
 		URL url = new URL(finalURL);
 		HttpURLConnection cnx = (HttpURLConnection)url.openConnection();
