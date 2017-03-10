@@ -13,9 +13,13 @@ import com.google.appinventor.components.annotations.UsesPermissions;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.appinventor.components.annotations.DesignerComponent;
+import com.google.appinventor.components.annotations.DesignerProperty;
+import com.google.appinventor.components.annotations.PropertyCategory;
+import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.annotations.SimpleEvent;
 import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
+import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.components.runtime.util.AsynchUtil;
@@ -23,9 +27,11 @@ import com.google.appinventor.components.runtime.util.ErrorMessages;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.BufferedInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.lang.Integer;
 
 @DesignerComponent(version = Crowdcrafting.VERSION,
     description = "Provides connectivity to Crowdcrafting.org services",
@@ -38,8 +44,10 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	public static final int VERSION = 1;
 
-	public static final String base_acct_url = "http://crowdcrafting.org/account/";
-	public static final String base_api_url = "http://crowdcrafting.org/api/";
+	private final Activity activity;
+
+	private static final String base_acct_url = "http://crowdcrafting.org/account/";
+	private static final String base_api_url = "http://crowdcrafting.org/api/";
 
 	private static final int H_APIKEY   = 1;
 	private static final int H_SESSION  = 2;
@@ -243,21 +251,35 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		  }
 	  }
 	}
-	private String processResponse( HttpURLConnection cnx ) throws Exception {
-		BufferedReader in = new BufferedReader( new InputStreamReader(cnx.getInputStream()) );
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-		while( (inputLine=in.readLine()) != null ) {
-			response.append( inputLine );
-		}
-		in.close();
-		return( response.toString() );
-	}
 
-	//
+  private static String getResponseContent(HttpURLConnection connection) throws IOException {
+    // Use the content encoding to convert bytes to characters.
+    String encoding = connection.getContentEncoding();
+    if (encoding == null) {
+          encoding = "UTF-8";
+    }
+    InputStreamReader reader = new InputStreamReader(connection.getInputStream(), encoding);
+    try {
+                         int contentLength = connection.getContentLength();
+                                           StringBuilder sb = (contentLength != -1)
+                                                     ? new StringBuilder(contentLength)
+                                                               : new StringBuilder();
+                                                                     char[] buf = new char[1024];
+                                                                           int read;
+                                                                                 while ((read = reader.read(buf)) != -1) {
+                                                                                         sb.append(buf, 0, read);
+                                                                                               }
+                                                                                                     return sb.toString();
+                                                                                                         } finally {
+                                                                                                               reader.close();
+                                                                                                                   }
+                                                                                                                     }
+    
+	
 	private String performRequest( String cmd, String finalURL, int flags ) throws IOException, JSONException {
+		String rtnval = "error";
 		String httpVerb = "GET";
-		if( (cmd.equals("login2") ) {
+		if( (cmd.equals("login2")) ) {
 			httpVerb = "POST";
 		}
 
@@ -269,23 +291,25 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				cnx.setRequestMethod( httpVerb );
 
 				// set any headers, given by flags argument
-				if( (flags&H_JSON) ) {
+				if( (flags&H_JSON) != 0 ) {
 					cnx.setRequestProperty( "Content-type", "application/json" );
 				}
-				if( (flags&H_CSRF) ) {
+				if( (flags&H_CSRF) != 0 ) {
 					cnx.setRequestProperty( "X-CSRFToken", csrf_token );
 				}
-				if( (flags&H_SESSION) ) {
+				if( (flags&H_SESSION) != 0 ) {
 					cnx.addRequestProperty( "Cookie", session_token );
 				}
-				if( (flags&H_REMEMBER) ) {
+				if( (flags&H_REMEMBER) != 0 ) {
 					cnx.addRequestProperty( "Cookie", remember_token );
 				}
 
 				// make the actual request and get response code
-				int responseCode = cnx.getResponseCode();
+				final int responseCode = cnx.getResponseCode();
 				// get the response data
-				String response = processResponse( cnx );
+				//String response = processResponse( cnx );
+				rtnval = getResponseContent( cnx );
+				final String response = rtnval;
 				//System.out.println( "response ["+response+"]" );
 				//JSONObject jsonResponse = new JSONObject(responseContent);
 
@@ -297,7 +321,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					activity.runOnUiThread(new Runnable() {
 					  @Override
 					  public void run() {
-						  GotLogin( responseCode, response );
+						  GotLogin( Integer.toString(responseCode), response );
 					  }
 					});
 				}
@@ -306,6 +330,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				cnx.disconnect();
 			}
 		}
+		return( rtnval );
 	}
 
 	// Event indicating that the login is complete
