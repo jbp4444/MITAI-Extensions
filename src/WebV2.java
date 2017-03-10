@@ -184,7 +184,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
   private boolean allowCookies;
   private YailList requestHeaders = new YailList();
   //private YailList responseHeaders = new YailList();
-  private ArrayList<ArrayList<String>> responseHeaders = new ArrayList<ArrayList<String>>;
+  private ArrayList<ArrayList<String>> responseHeaders = new ArrayList<ArrayList<String>>();
   private boolean saveResponse;
   private String responseFileName = "";
 
