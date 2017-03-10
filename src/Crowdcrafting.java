@@ -177,17 +177,17 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					loginPhase12();
+					do_login();
 				} catch (IOException e) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "loginPhase1", 9900 );
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "login", 9900 );
 				} catch (JSONException je) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "loginPhase1", 9901 );
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "login", 9901 );
 				}
 			}
 		});
 	}
 
-	private void loginPhase12() throws IOException, JSONException {
+	private void do_login() throws IOException, JSONException {
 		last_status = "starting phase-1 of login";
 		String url = base_acct_url + "signin";
 		String response = performRequest( "login1", url, null, H_JSON );
@@ -206,6 +206,107 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		String jsondata = "{ \"email\": \""+username+"\", \"password\": \""+password+"\" }";
 		response = performRequest( "login2", url, jsondata, H_JSON|H_CSRF|H_SESSION );
 	}
+
+	// Event indicating that the login is complete
+	@SimpleEvent(description = "Event triggered when the user is logged in")
+	public void GotLogin( String responseCode, String response ) {
+		EventDispatcher.dispatchEvent( this, "GotLogin", responseCode, response );
+	}
+
+	//  //  //  //  //  //  //  //  //  // //  //  //  //
+
+	@SimpleFunction(description = "Get the user's Crowdcrafting profile")
+	public void getUserProfile() {
+		AsynchUtil.runAsynchronously(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					do_getuserprofile();
+				} catch (IOException e) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getUserProfile", 9902 );
+				} catch (JSONException je) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getUserProfile", 9903 );
+				}
+			}
+		});
+
+	private void do_getuserprofile() throws IOException, JSONException {
+		String url = base_acct_url + "profile";
+		String response = performRequest( "userprofile", url, null, H_JSON|H_SESSION|H_REMEMBER );
+	}
+
+	// Event indicating that the get-user-profile request is complete
+	@SimpleEvent(description = "Event triggered when the user profile is retrieved")
+	public void GotUserProfile( String responseCode, String response ) {
+		EventDispatcher.dispatchEvent( this, "GotUserProfile", responseCode, response );
+	}
+
+	//  //  //  //  //  //  //  //  //  // //  //  //  //
+
+	@SimpleFunction(description = "Get the next task in a project")
+	public void getNextTask() {
+		AsynchUtil.runAsynchronously(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					do_getnexttask();
+				} catch (IOException e) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getNextTask", 9904 );
+				} catch (JSONException je) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getNextTask", 9905 );
+				}
+			}
+		});
+
+	private void do_getnexttask() throws IOException, JSONException {
+		// TODO: make sure project_id is not null or zero
+		String url = base_api_url + "project/" + project_id + "/newtask";
+		String response = performRequest( "nexttask", url, null, H_JSON|H_SESSION|H_REMEMBER );
+	}
+
+	// Event indicating that the get-user-profile request is complete
+	@SimpleEvent(description = "Event triggered when the next task is retrieved")
+	public void GotNextTask( String responseCode, String response ) {
+		EventDispatcher.dispatchEvent( this, "GotNextTask", responseCode, response );
+	}
+
+	//  //  //  //  //  //  //  //  //  // //  //  //  //
+
+	@SimpleFunction(description = "Post the answer to the current task")
+	public void postAnswer() {
+		AsynchUtil.runAsynchronously(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					do_postanswer();
+				} catch (IOException e) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "postAnswer", 9904 );
+				} catch (JSONException je) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "postAnswer", 9905 );
+				}
+			}
+		});
+
+	private void do_postanswer() throws IOException, JSONException {
+		String url = base_api_url + "/taskrun";
+		// TODO: make sure task_id is not null or zero
+		// TODO: make sure project_id is not null or zero
+		String jsondata = "{ \"project_id\": " + project_id + ", "
+			+ "\"task_id\": " + task_id + ", "
+			+ "\"info\": \"999\" "
+	 		+ "}";
+		String response = performRequest( "postanswer", url, jsondata, H_JSON|H_SESSION|H_REMEMBER );
+	}
+
+	// Event indicating that the get-user-profile request is complete
+	@SimpleEvent(description = "Event triggered when an answer is posted")
+	public void PostedAnswer( String responseCode, String response ) {
+		EventDispatcher.dispatchEvent( this, "PostedAnswer", responseCode, response );
+	}
+
+	//  //  //  //  //  //  //  //  //  //  //  //  //  //  //
+	  //  //  //  //  //  //  //  //  //  //  //  //  //  //
+	//  //  //  //  //  //  //  //  //  //  //  //  //  //  //
 
 	// helper function to catch Set-Cookie response headers
 	private void parseHeaders( HttpURLConnection cnx ) {
@@ -282,7 +383,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	private String performRequest( String cmd, String finalURL, String data, int flags ) throws IOException, JSONException {
 		String rtnval = "error";
 		String httpVerb = "GET";
-		if( (cmd.equals("login2")) ) {
+		if( (cmd.equals("login2")) || (cmd.equals("postanswer")) ) {
 			httpVerb = "POST";
 			// TODO: make sure data is not null
 		}
@@ -337,6 +438,30 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 						  GotLogin( Integer.toString(responseCode), response );
 					  }
 					});
+				} else if( cmd.equals("userprofile") ) {
+					last_status = "launching GotUserProfile event";
+					activity.runOnUiThread(new Runnable() {
+					  @Override
+					  public void run() {
+						  GotUserProfile( Integer.toString(responseCode), response );
+					  }
+					});
+				} else if( cmd.equals("nexttask") ) {
+					last_status = "launching GotNextTask event";
+					activity.runOnUiThread(new Runnable() {
+					  @Override
+					  public void run() {
+						  GotNextTask( Integer.toString(responseCode), response );
+					  }
+					});
+				} else if( cmd.equals("postanswer") ) {
+					last_status = "launching PostedAnswer event";
+					activity.runOnUiThread(new Runnable() {
+					  @Override
+					  public void run() {
+						  PostedAnswer( Integer.toString(responseCode), response );
+					  }
+					});
 				}
 
 			} finally {
@@ -346,10 +471,5 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		return( rtnval );
 	}
 
-	// Event indicating that the login is complete
-	@SimpleEvent(description = "Event triggered when the user is logged in")
-	public void GotLogin( String responseCode, String response ) {
-		EventDispatcher.dispatchEvent( this, "GotLogin", responseCode, response );
-	}
 
 }
