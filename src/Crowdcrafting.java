@@ -176,7 +176,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					loginPhase1();
+					loginPhase12();
 				} catch (IOException e) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "loginPhase1", 9900 );
 				} catch (JSONException je) {
@@ -186,7 +186,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		});
 	}
 
-	private void loginPhase1() throws IOException, JSONException {
+	private void loginPhase12() throws IOException, JSONException {
 		last_status = "starting phase-1 of login";
 		String url = base_acct_url + "signin";
 		String response = performRequest( "login1", url, H_JSON );
@@ -199,22 +199,6 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		//System.out.println( "phase1 - found csrf token" );
 		//System.out.println( "i="+csrf_i+" j="+csrf_j+" k="+csrf_k+" ["+csrf_token+"]" );
 
-		last_status = "ending phase-1 of login";
-		AsynchUtil.runAsynchronously(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					loginPhase2();
-				} catch (IOException e) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "loginPhase2", 9902 );
-				} catch (JSONException je) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "loginPhase2", 9903 );
-				}
-			}
-		});
-	}
-
-	private void loginPhase2() throws IOException, JSONException {
 		last_status = "starting phase-2 of login";
 		String url = base_acct_url + "signin";
 		String response = performRequest( "login2", url, H_JSON|H_CSRF );
