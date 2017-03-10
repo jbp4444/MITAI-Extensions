@@ -289,10 +289,11 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 				// make the actual request and get response code
 				final int responseCode = cnx.getResponseCode();
-				last_status = "response code = "+Integer.toString(responseCode);
 				// get the response data
 				//String response = processResponse( cnx );
 				rtnval = getResponseContent( cnx );
+				last_status = "response code = "+Integer.toString(responseCode)
+					+ "; text = "+rtnval;
 				final String response = rtnval;
 				//System.out.println( "response ["+response+"]" );
 				//JSONObject jsonResponse = new JSONObject(responseContent);
