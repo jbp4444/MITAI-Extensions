@@ -252,30 +252,29 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	  }
 	}
 
-  private static String getResponseContent(HttpURLConnection connection) throws IOException {
-    // Use the content encoding to convert bytes to characters.
-    String encoding = connection.getContentEncoding();
-    if (encoding == null) {
-          encoding = "UTF-8";
-    }
-    InputStreamReader reader = new InputStreamReader(connection.getInputStream(), encoding);
-    try {
-                         int contentLength = connection.getContentLength();
-                                           StringBuilder sb = (contentLength != -1)
-                                                     ? new StringBuilder(contentLength)
-                                                               : new StringBuilder();
-                                                                     char[] buf = new char[1024];
-                                                                           int read;
-                                                                                 while ((read = reader.read(buf)) != -1) {
-                                                                                         sb.append(buf, 0, read);
-                                                                                               }
-                                                                                                     return sb.toString();
-                                                                                                         } finally {
-                                                                                                               reader.close();
-                                                                                                                   }
-                                                                                                                     }
-    
-	
+	private static String getResponseContent(HttpURLConnection connection) throws IOException {
+		// Use the content encoding to convert bytes to characters.
+		String encoding = connection.getContentEncoding();
+		if (encoding == null) {
+			encoding = "UTF-8";
+		}
+		InputStreamReader reader = new InputStreamReader(connection.getInputStream(), encoding);
+		try {
+			int contentLength = connection.getContentLength();
+			StringBuilder sb = (contentLength != -1)
+				? new StringBuilder(contentLength)
+				: new StringBuilder();
+			char[] buf = new char[1024];
+			int read;
+			while ((read = reader.read(buf)) != -1) {
+				sb.append(buf, 0, read);
+			}
+			return sb.toString();
+		} finally {
+			reader.close();
+		}
+	}
+
 	private String performRequest( String cmd, String finalURL, int flags ) throws IOException, JSONException {
 		String rtnval = "error";
 		String httpVerb = "GET";
@@ -318,6 +317,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 				// Dispatch the event.
 				if( cmd.equals("login2") ) {
+					last_status = "launching GotLogin event";
 					activity.runOnUiThread(new Runnable() {
 					  @Override
 					  public void run() {
