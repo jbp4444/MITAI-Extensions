@@ -229,6 +229,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				}
 			}
 		});
+	}
 
 	private void do_getuserprofile() throws IOException, JSONException {
 		String url = base_acct_url + "profile";
@@ -257,6 +258,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				}
 			}
 		});
+	}
 
 	private void do_getnexttask() throws IOException, JSONException {
 		// TODO: make sure project_id is not null or zero
@@ -286,6 +288,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				}
 			}
 		});
+	}
 
 	private void do_postanswer() throws IOException, JSONException {
 		String url = base_api_url + "/taskrun";
