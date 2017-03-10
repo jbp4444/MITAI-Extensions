@@ -183,8 +183,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
   private String urlString = "";
   private boolean allowCookies;
   private YailList requestHeaders = new YailList();
-  //private YailList responseHeaders = new YailList();
-  private ArrayList<ArrayList<String>> responseHeaders = new ArrayList<ArrayList<String>>();
+  private YailList responseHeaders = new YailList();
   private boolean saveResponse;
   private String responseFileName = "";
 
@@ -238,7 +237,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
       "of each sublist represents the header field name. The second element of each " +
       "sublist represents the header field values, either a single value or a list " +
       "containing multiple values.")
-  public ArrayList<ArrayList<String>> ResponseHeaders() {
+  public YailList ResponseHeaders() {
     return responseHeaders;
   }
 
@@ -993,7 +992,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
 
   private void processResponseCookies(HttpURLConnection connection) {
 	int i = 0;
-	ArrayList<ArrayList<String>> newobj = new ArrayList<ArrayList<String>>();
+	ArrayList<String> newobj = new ArrayList<String>();
 
 	while( true ) {
 		String hdr_type = connection.getHeaderFieldKey(i);
@@ -1002,10 +1001,10 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
 		if( (hdr_type==null) && (hdr_value==null) ) {
 			break;
 		} else {
-			ArrayList<String> newitem = new ArrayList(2);
-			newitem.add(0,hdr_type);
-			newitem.add(1,hdr_value);
-			newobj.add( newitem );
+			//ArrayList<String> newitem = new ArrayList(2);
+			//newitem.add(0,hdr_type);
+			//newitem.add(1,hdr_value);
+			newobj.add( hdr_type + hdr_value );
 		}
 
 		i++;
@@ -1014,8 +1013,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
 			break;
 		}
 	}
-	//responseHeaders = YailList.makeList(newobj);
-	responseHeaders = newobj;
+	responseHeaders = YailList.makeList(newobj);
 
     if (allowCookies && cookieHandler != null) {
       try {
