@@ -27,6 +27,7 @@ import com.google.appinventor.components.runtime.util.ErrorMessages;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.BufferedOutputStream;
 import java.io.BufferedInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -189,7 +190,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	private void loginPhase12() throws IOException, JSONException {
 		last_status = "starting phase-1 of login";
 		String url = base_acct_url + "signin";
-		String response = performRequest( "login1", url, H_JSON );
+		String response = performRequest( "login1", url, null, H_JSON );
 
 		// TODO: there is no error checking here
 		int csrf_i = response.indexOf( "csrf" );
@@ -201,7 +202,9 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 		last_status = "starting phase-2 of login";
 		url = base_acct_url + "signin";
-		response = performRequest( "login2", url, H_JSON|H_CSRF );
+		// send the post data
+		String jsondata = "{ \"email\": \""+username+"\", \"password\": \""+password+"\" }";
+		response = performRequest( "login2", url, jsondata, H_JSON|H_CSRF|H_SESSION );
 	}
 
 	// helper function to catch Set-Cookie response headers
@@ -259,11 +262,29 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		}
 	}
 
-	private String performRequest( String cmd, String finalURL, int flags ) throws IOException, JSONException {
+	private static void writeRequestData(HttpURLConnection connection, byte[] postData) throws IOException {
+		// According to the documentation at
+		// http://developer.android.com/reference/java/net/HttpURLConnection.html
+		// HttpURLConnection uses the GET method by default. It will use POST if setDoOutput(true) has
+		// been called.
+		connection.setDoOutput(true); // This makes it something other than a HTTP GET.
+		// Write the data.
+		connection.setFixedLengthStreamingMode(postData.length);
+		BufferedOutputStream out = new BufferedOutputStream(connection.getOutputStream());
+		try {
+			out.write(postData, 0, postData.length);
+			out.flush();
+		} finally {
+			out.close();
+		}
+	}
+
+	private String performRequest( String cmd, String finalURL, String data, int flags ) throws IOException, JSONException {
 		String rtnval = "error";
 		String httpVerb = "GET";
 		if( (cmd.equals("login2")) ) {
 			httpVerb = "POST";
+			// TODO: make sure data is not null
 		}
 
 		URL url = new URL(finalURL);
@@ -285,6 +306,12 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				}
 				if( (flags&H_REMEMBER) != 0 ) {
 					cnx.addRequestProperty( "Cookie", remember_token );
+				}
+
+				//System.out.println( "jsonData ["+jsonData+"]" );
+				if( data != null ) {
+					// TODO: should send a charset encoding into getBytes
+					writeRequestData( cnx, data.getBytes() );
 				}
 
 				// make the actual request and get response code
