@@ -200,8 +200,8 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		//System.out.println( "i="+csrf_i+" j="+csrf_j+" k="+csrf_k+" ["+csrf_token+"]" );
 
 		last_status = "starting phase-2 of login";
-		String url = base_acct_url + "signin";
-		String response = performRequest( "login2", url, H_JSON|H_CSRF );
+		url = base_acct_url + "signin";
+		response = performRequest( "login2", url, H_JSON|H_CSRF );
 	}
 
 	// helper function to catch Set-Cookie response headers
@@ -289,6 +289,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 				// make the actual request and get response code
 				final int responseCode = cnx.getResponseCode();
+				last_status = "response code = "+Integer.toString(responseCode);
 				// get the response data
 				//String response = processResponse( cnx );
 				rtnval = getResponseContent( cnx );
