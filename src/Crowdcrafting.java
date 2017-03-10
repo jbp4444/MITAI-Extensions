@@ -25,7 +25,6 @@ import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.components.runtime.util.AsynchUtil;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
-import com.google.appinventor.components.runtime.util.JsonUtil;
 import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 
 import java.io.IOException;
@@ -36,6 +35,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.lang.Integer;
+import java.lang.Exception;
+
 
 @DesignerComponent(version = Crowdcrafting.VERSION,
     description = "Provides connectivity to Crowdcrafting.org services",
@@ -49,6 +50,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	public static final int VERSION = 1;
 
 	private final Context context;
+	private final Activity activity;
 	private final SharedPreferences sharedPreferences;
 
 	private static final String base_acct_url = "http://crowdcrafting.org/account/";
@@ -70,6 +72,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		//form.setCrowdcraftingTagline();
 
 		context = container.$context();
+		activity = container.$context();
 		sharedPreferences = context.getSharedPreferences("Crowdcrafting",Context.MODE_PRIVATE);
 	}
 
@@ -185,16 +188,14 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			public void run() {
 				try {
 					do_login();
-				} catch (IOException e) {
+				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "login", 9900 );
-				} catch (JSONException je) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "login", 9901 );
 				}
 			}
 		});
 	}
 
-	private void do_login() throws IOException, JSONException {
+	private void do_login() throws IOException {
 		last_status = "starting phase-1 of login";
 		String url = base_acct_url + "signin";
 		String response = performRequest( "login1", url, null, H_JSON );
@@ -203,7 +204,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		int csrf_i = response.indexOf( "csrf" );
 		int csrf_j = response.indexOf( "\"", csrf_i+5 );
 		int csrf_k = response.indexOf( "\"", csrf_j+1 );
-		csrf_token = response.substring(csrf_j+1,csrf_k);
+		String csrf_token = response.substring(csrf_j+1,csrf_k);
 		StoreValue( "csrf_token", csrf_token );
 
 		last_status = "starting phase-2 of login";
@@ -230,16 +231,14 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			public void run() {
 				try {
 					do_getuserprofile();
-				} catch (IOException e) {
+				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getUserProfile", 9902 );
-				} catch (JSONException je) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getUserProfile", 9903 );
 				}
 			}
 		});
 	}
 
-	private void do_getuserprofile() throws IOException, JSONException {
+	private void do_getuserprofile() throws IOException {
 		String url = base_acct_url + "profile";
 		String response = performRequest( "userprofile", url, null, H_JSON|H_SESSION|H_REMEMBER );
 	}
@@ -259,16 +258,14 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			public void run() {
 				try {
 					do_getnexttask();
-				} catch (IOException e) {
+				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getNextTask", 9904 );
-				} catch (JSONException je) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getNextTask", 9905 );
 				}
 			}
 		});
 	}
 
-	private void do_getnexttask() throws IOException, JSONException {
+	private void do_getnexttask() throws IOException {
 		// TODO: make sure project_id is not null or zero
 		String project_id = GetValue( "project_id", "0" );
 		String url = base_api_url + "project/" + project_id + "/newtask";
@@ -284,22 +281,21 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	//  //  //  //  //  //  //  //  //  // //  //  //  //
 
 	@SimpleFunction(description = "Post the answer to the current task")
-	public void postAnswer() {
+	public void postAnswer( String answerValue ) {
+		final String tmpVal = answerValue;
 		AsynchUtil.runAsynchronously(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					do_postanswer();
-				} catch (IOException e) {
+					do_postanswer(tmpVal);
+				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "postAnswer", 9904 );
-				} catch (JSONException je) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "postAnswer", 9905 );
 				}
 			}
 		});
 	}
 
-	private void do_postanswer() throws IOException, JSONException {
+	private void do_postanswer( String answerValue ) throws IOException {
 		String url = base_api_url + "/taskrun";
 		// TODO: make sure task_id is not null or zero
 		// TODO: make sure project_id is not null or zero
@@ -307,7 +303,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		String task_id    = GetValue( "task_id", "0" );
 		String jsondata = "{ \"project_id\": " + project_id + ", "
 			+ "\"task_id\": " + task_id + ", "
-			+ "\"info\": \"999\" "
+			+ "\"info\": \""+ answerValue +"\" "
 	 		+ "}";
 		String response = performRequest( "postanswer", url, jsondata, H_JSON|H_SESSION|H_REMEMBER );
 	}
@@ -323,26 +319,23 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	//  //  //  //  //  //  //  //  //  //  //  //  //  //  //
 
 	// taken from TinyDB.java in main source code
-	public void StoreValue(final String tag, final Object valueToStore) {
-      final SharedPreferences.Editor sharedPrefsEditor = sharedPreferences.edit();
-      try {
-        sharedPrefsEditor.putString(tag, JsonUtil.getJsonRepresentation(valueToStore));
-        sharedPrefsEditor.commit();
-      } catch (JSONException e) {
-        //throw new YailRuntimeError("Value failed to convert to JSON.", "JSON Creation Error.");
-      }
-    }
-	public Object GetValue(final String tag, final Object valueIfTagNotThere) {
-      try {
-        String value = sharedPreferences.getString(tag, "");
-        // If there's no entry with tag as a key then return the empty string.
-        //    was  return (value.length() == 0) ? "" : JsonUtil.getObjectFromJson(value);
-        return (value.length() == 0) ? valueIfTagNotThere : JsonUtil.getObjectFromJson(value);
-      } catch (JSONException e) {
-        //throw new YailRuntimeError("Value failed to convert from JSON.", "JSON Creation Error.");
-		return new String("Value failed to convert from JSON" );
-      }
-    }
+	public void StoreValue(final String tag, final String valueToStore) {
+		final SharedPreferences.Editor sharedPrefsEditor = sharedPreferences.edit();
+		try {
+			sharedPrefsEditor.putString( tag, valueToStore );
+			//sharedPrefsEditor.commit();
+			sharedPrefsEditor.apply();
+		} catch( Exception e ) {
+			//throw new YailRuntimeError("Value failed to convert to JSON.", "JSON Creation Error.");
+		}
+	}
+	public String GetValue(final String tag, final String valueIfTagNotThere ) {
+		try {
+			return sharedPreferences.getString( tag, valueIfTagNotThere );
+		} catch( Exception e ) {
+			return "error";
+		}
+	}
 
 	// helper function to catch Set-Cookie response headers
 	private void parseHeaders( HttpURLConnection cnx ) {
@@ -418,7 +411,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		}
 	}
 
-	private String performRequest( String cmd, String finalURL, String data, int flags ) throws IOException, JSONException {
+	private String performRequest( String cmd, String finalURL, String data, int flags ) throws IOException {
 		String rtnval = "error";
 		String httpVerb = "GET";
 		if( (cmd.equals("login2")) || (cmd.equals("postanswer")) ) {
@@ -466,7 +459,6 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					+ "; text = "+rtnval;
 				final String response = rtnval;
 				//System.out.println( "response ["+response+"]" );
-				//JSONObject jsonResponse = new JSONObject(responseContent);
 
 				// check for any set-cookie headers (session tokens)
 				parseHeaders( cnx );
