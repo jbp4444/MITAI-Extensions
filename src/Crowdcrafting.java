@@ -276,6 +276,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
+					// TODO: last_id parameter allows for pagination
 					String url = base_api_url + "project?all=1";
 					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
@@ -292,6 +293,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
+					// TODO: last_id parameter allows for pagination
 					// TODO: should check shortName for validity (or uu-encode it?)
 					String url = base_api_url + "project?all=1&short_name=" + tmpVal;
 					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
@@ -556,6 +558,9 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					  }
 					});
 				}
+
+			} catch( Exception e ) {
+				last_status = "caught exception in performRequest [" + e.toString() +"]";
 
 			} finally {
 				cnx.disconnect();
