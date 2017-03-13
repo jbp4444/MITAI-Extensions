@@ -1,4 +1,12 @@
-package com.google.appinventor.components.runtime;
+// Copyright 2017, John Pormann, Duke University
+//
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// borrowed from several java files in main-line AppInventor source
+// that code is Copyright 2011-2014 MIT, All rights reserved
+
+ackage com.google.appinventor.components.runtime;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
@@ -45,7 +53,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
   //  File file = new File(filename);
   //  String contents = FileUtils.readFileToString(file,"utf-8");
   //  // convert to JSON
-  //  mainDB = new JSONObject(contents); 
+  //  mainDB = new JSONObject(contents);
   //}
 
   // borrowing heavily from File component, ReadFrom
@@ -215,4 +223,3 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
   }
 
 }
-

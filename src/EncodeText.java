@@ -1,3 +1,11 @@
+// Copyright 2017, John Pormann, Duke University
+//
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// borrowed from several java files in main-line AppInventor source
+// that code is Copyright 2011-2014 MIT, All rights reserved
+
 package com.google.appinventor.components.runtime;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
@@ -62,7 +70,7 @@ public final class EncodeText extends AndroidNonvisibleComponent {
     }
     return( rtn );
   }
- 
+
   @SimpleFunction(description = "Decode a hex string" )
   public String FromHex( String input ) {
     String rtn = "ERROR";
@@ -100,4 +108,3 @@ public final class EncodeText extends AndroidNonvisibleComponent {
   }
 
 }
-

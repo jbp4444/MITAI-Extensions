@@ -1,10 +1,10 @@
-// -*- mode: java; c-basic-offset: 2; -*-
-// Copyright 2009-2011 Google, All Rights reserved
-// Copyright 2011-2014 MIT, All rights reserved
+// Copyright 2017, John Pormann, Duke University
+//
 // Released under the Apache License, Version 2.0
 // http://www.apache.org/licenses/LICENSE-2.0
-
-// borrowed heavily from YandexTranslate code in main-line AppInventor source
+//
+// borrowed from several java files in main-line AppInventor source
+// that code is Copyright 2011-2014 MIT, All rights reserved
 
 package com.google.appinventor.components.runtime;
 
