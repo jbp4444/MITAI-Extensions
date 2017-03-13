@@ -564,7 +564,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				}
 
 			} catch( Exception e ) {
-				last_status = "caught exception in performRequest [" + e.toString() +"]";
+				last_status = last_status + "  caught exception in performRequest [" + e.toString() +"]";
 
 			} finally {
 				cnx.disconnect();
