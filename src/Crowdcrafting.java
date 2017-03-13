@@ -199,33 +199,29 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					do_login();
+					last_status = "starting phase-1 of login";
+					String url = base_acct_url + "signin";
+					String response = performRequest( "login1", url, null, H_JSON );
+
+					// TODO: there is no error checking here
+					int csrf_i = response.indexOf( "csrf" );
+					int csrf_j = response.indexOf( "\"", csrf_i+5 );
+					int csrf_k = response.indexOf( "\"", csrf_j+1 );
+					String csrf_token = response.substring(csrf_j+1,csrf_k);
+					StoreValue( "csrf_token", csrf_token );
+
+					last_status = "starting phase-2 of login";
+					url = base_acct_url + "signin";
+					// send the post data
+					String username = GetValue( "username", "none" );
+					String password = GetValue( "password", "none" );
+					String jsondata = "{ \"email\": \""+username+"\", \"password\": \""+password+"\" }";
+					response = performRequest( "login2", url, jsondata, H_JSON|H_CSRF|H_SESSION );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "login", 9900 );
 				}
 			}
 		});
-	}
-
-	private void do_login() throws IOException {
-		last_status = "starting phase-1 of login";
-		String url = base_acct_url + "signin";
-		String response = performRequest( "login1", url, null, H_JSON );
-
-		// TODO: there is no error checking here
-		int csrf_i = response.indexOf( "csrf" );
-		int csrf_j = response.indexOf( "\"", csrf_i+5 );
-		int csrf_k = response.indexOf( "\"", csrf_j+1 );
-		String csrf_token = response.substring(csrf_j+1,csrf_k);
-		StoreValue( "csrf_token", csrf_token );
-
-		last_status = "starting phase-2 of login";
-		url = base_acct_url + "signin";
-		// send the post data
-		String username = GetValue( "username", "none" );
-		String password = GetValue( "password", "none" );
-		String jsondata = "{ \"email\": \""+username+"\", \"password\": \""+password+"\" }";
-		response = performRequest( "login2", url, jsondata, H_JSON|H_CSRF|H_SESSION );
 	}
 
 	// Event indicating that the login is complete
@@ -242,17 +238,13 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					do_getuserprofile();
+					String url = base_acct_url + "profile";
+					String response = performRequest( "userprofile", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getUserProfile", 9902 );
 				}
 			}
 		});
-	}
-
-	private void do_getuserprofile() throws IOException {
-		String url = base_acct_url + "profile";
-		String response = performRequest( "userprofile", url, null, H_JSON|H_SESSION|H_REMEMBER );
 	}
 
 	// Event indicating that the get-user-profile request is complete
@@ -269,17 +261,13 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					do_getprojectlist();
+					String url = base_api_url + "project";
+					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getProjectList", 9903 );
 				}
 			}
 		});
-	}
-
-	private void do_getuserprofile() throws IOException {
-		String url = base_api_url + "project";
-		String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
 	}
 
 	// Event indicating that the get-user-profile request is complete
@@ -296,19 +284,15 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					do_getnexttask();
+					// TODO: make sure project_id is not null or zero
+					String project_id = GetValue( "project_id", "0" );
+					String url = base_api_url + "project/" + project_id + "/newtask";
+					String response = performRequest( "nexttask", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getNextTask", 9904 );
 				}
 			}
 		});
-	}
-
-	private void do_getnexttask() throws IOException {
-		// TODO: make sure project_id is not null or zero
-		String project_id = GetValue( "project_id", "0" );
-		String url = base_api_url + "project/" + project_id + "/newtask";
-		String response = performRequest( "nexttask", url, null, H_JSON|H_SESSION|H_REMEMBER );
 	}
 
 	// Event indicating that the get-user-profile request is complete
@@ -326,25 +310,21 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					do_postanswer(tmpVal);
+					String url = base_api_url + "/taskrun";
+					// TODO: make sure task_id is not null or zero
+					// TODO: make sure project_id is not null or zero
+					String project_id = GetValue( "project_id", "0" );
+					String task_id    = GetValue( "task_id", "0" );
+					String jsondata = "{ \"project_id\": " + project_id + ", "
+						+ "\"task_id\": " + task_id + ", "
+						+ "\"info\": \""+ answerValue +"\" "
+				 		+ "}";
+					String response = performRequest( "postanswer", url, jsondata, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "postAnswer", 9904 );
 				}
 			}
 		});
-	}
-
-	private void do_postanswer( String answerValue ) throws IOException {
-		String url = base_api_url + "/taskrun";
-		// TODO: make sure task_id is not null or zero
-		// TODO: make sure project_id is not null or zero
-		String project_id = GetValue( "project_id", "0" );
-		String task_id    = GetValue( "task_id", "0" );
-		String jsondata = "{ \"project_id\": " + project_id + ", "
-			+ "\"task_id\": " + task_id + ", "
-			+ "\"info\": \""+ answerValue +"\" "
-	 		+ "}";
-		String response = performRequest( "postanswer", url, jsondata, H_JSON|H_SESSION|H_REMEMBER );
 	}
 
 	// Event indicating that the get-user-profile request is complete
