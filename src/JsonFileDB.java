@@ -6,7 +6,7 @@
 // borrowed from several java files in main-line AppInventor source
 // that code is Copyright 2011-2014 MIT, All rights reserved
 
-ackage com.google.appinventor.components.runtime;
+package com.google.appinventor.components.runtime;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
