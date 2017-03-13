@@ -218,7 +218,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					String jsondata = "{ \"email\": \""+username+"\", \"password\": \""+password+"\" }";
 					response = performRequest( "login2", url, jsondata, H_JSON|H_CSRF|H_SESSION );
 				} catch( Exception e ) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "login", 9900 );
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "login", 9901 );
 				}
 			}
 		});
@@ -255,7 +255,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	//  //  //  //  //  //  //  //  //  // //  //  //  //
 
-	@SimpleFunction(description = "Get a list of available projects for this user")
+	@SimpleFunction(description = "Get a list of projects owned by this user")
 	public void getProjectList() {
 		AsynchUtil.runAsynchronously(new Runnable() {
 			@Override
@@ -265,6 +265,37 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getProjectList", 9903 );
+				}
+			}
+		});
+	}
+
+	@SimpleFunction(description = "Get the list of all available projects for this user")
+	public void getAllProjectList() {
+		AsynchUtil.runAsynchronously(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					String url = base_api_url + "project?all=1";
+					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
+				} catch( Exception e ) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getAllProjectList", 9904 );
+				}
+			}
+		});
+	}
+
+	@SimpleFunction(description = "Query the list of all available projects based on a short-name")
+	public void queryProjectList( String shortName ) {
+		AsynchUtil.runAsynchronously(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					// TODO: should check shortName for validity (or uu-encode it?)
+					String url = base_api_url + "project?all=1&short_name=" + shortName;
+					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
+				} catch( Exception e ) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "queryProjectList", 9905 );
 				}
 			}
 		});
@@ -289,7 +320,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					String url = base_api_url + "project/" + project_id + "/newtask";
 					String response = performRequest( "nexttask", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getNextTask", 9904 );
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getNextTask", 9906 );
 				}
 			}
 		});
@@ -321,7 +352,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				 		+ "}";
 					String response = performRequest( "postanswer", url, jsondata, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
-					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "postAnswer", 9904 );
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "postAnswer", 9907 );
 				}
 			}
 		});
@@ -497,6 +528,14 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					  @Override
 					  public void run() {
 						  GotUserProfile( Integer.toString(responseCode), response );
+					  }
+					});
+				} else if( cmd.equals("projectlist") ) {
+					last_status = "launching GotProjectList event";
+					activity.runOnUiThread(new Runnable() {
+					  @Override
+					  public void run() {
+						  GotProjectList( Integer.toString(responseCode), response );
 					  }
 					});
 				} else if( cmd.equals("nexttask") ) {
