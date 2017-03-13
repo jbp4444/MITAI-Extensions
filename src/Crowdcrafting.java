@@ -431,7 +431,13 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 		if (encoding == null) {
 			encoding = "UTF-8";
 		}
-		InputStreamReader reader = new InputStreamReader(connection.getInputStream(), encoding);
+		InputStreamReader reader;
+		// JBP - in case there's an error and values are on error-stream
+		if( connection.getResponseCode() >= 400 ) {
+			reader = new InputStreamReader(connection.getErrorStream(), encoding);
+		} else {
+		 	reader = new InputStreamReader(connection.getInputStream(), encoding);
+		}
 		try {
 			int contentLength = connection.getContentLength();
 			StringBuilder sb = (contentLength != -1)
