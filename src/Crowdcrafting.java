@@ -278,6 +278,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				try {
 					// TODO: last_id parameter allows for pagination
 					String url = base_api_url + "project?all=1";
+					last_status = "url is ["+url+"]";
 					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getAllProjectList", 9904 );
