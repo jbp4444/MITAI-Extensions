@@ -504,9 +504,11 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				}
 
 				// make the actual request and get response code
+				last_status = "getting http data";
 				final int responseCode = cnx.getResponseCode();
 				// get the response data
 				//String response = processResponse( cnx );
+				last_status = "getting response content";
 				rtnval = getResponseContent( cnx );
 				last_status = "response code = "+Integer.toString(responseCode)
 					+ "; text = "+rtnval;
@@ -514,6 +516,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 				//System.out.println( "response ["+response+"]" );
 
 				// check for any set-cookie headers (session tokens)
+				last_status = "parsing headers";
 				parseHeaders( cnx );
 
 				// Dispatch the event.
