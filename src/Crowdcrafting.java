@@ -263,6 +263,33 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	//  //  //  //  //  //  //  //  //  // //  //  //  //
 
+	@SimpleFunction(description = "Get a list of available projects for this user")
+	public void getProjectList() {
+		AsynchUtil.runAsynchronously(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					do_getprojectlist();
+				} catch( Exception e ) {
+					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "getProjectList", 9903 );
+				}
+			}
+		});
+	}
+
+	private void do_getuserprofile() throws IOException {
+		String url = base_api_url + "project";
+		String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
+	}
+
+	// Event indicating that the get-user-profile request is complete
+	@SimpleEvent(description = "Event triggered when the user's project list is retrieved")
+	public void GotProjectList( String responseCode, String response ) {
+		EventDispatcher.dispatchEvent( this, "GotProjectList", responseCode, response );
+	}
+
+	//  //  //  //  //  //  //  //  //  // //  //  //  //
+
 	@SimpleFunction(description = "Get the next task in a project")
 	public void getNextTask() {
 		AsynchUtil.runAsynchronously(new Runnable() {
