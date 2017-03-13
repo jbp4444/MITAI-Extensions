@@ -317,7 +317,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					String task_id    = GetValue( "task_id", "0" );
 					String jsondata = "{ \"project_id\": " + project_id + ", "
 						+ "\"task_id\": " + task_id + ", "
-						+ "\"info\": \""+ answerValue +"\" "
+						+ "\"info\": \""+ tmpVal +"\" "
 				 		+ "}";
 					String response = performRequest( "postanswer", url, jsondata, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
