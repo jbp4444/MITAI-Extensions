@@ -287,12 +287,13 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	@SimpleFunction(description = "Query the list of all available projects based on a short-name")
 	public void queryProjectList( String shortName ) {
+		final String tmpVal = shortName;
 		AsynchUtil.runAsynchronously(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					// TODO: should check shortName for validity (or uu-encode it?)
-					String url = base_api_url + "project?all=1&short_name=" + shortName;
+					String url = base_api_url + "project?all=1&short_name=" + tmpVal;
 					String response = performRequest( "projectlist", url, null, H_JSON|H_SESSION|H_REMEMBER );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(Crowdcrafting.this, "queryProjectList", 9905 );
