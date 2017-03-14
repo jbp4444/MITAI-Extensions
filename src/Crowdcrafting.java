@@ -321,15 +321,15 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	// Event indicating that the get-user-profile request is complete
 	@SimpleEvent(description = "Event triggered when the next task is retrieved")
-	public void GotNextTask( String responseCode, String response, String nextTaskID ) {
-		nextTaskID = "error";
+	public void GotNextTask( String responseCode, String response ) {
 		try {
 			JSONObject obj = new JSONObject(response);
-			nextTaskID = String.valueOf( obj.getInt("id") );
+			String nextTaskID = String.valueOf( obj.getInt("id") );
+			StoreValue( "task_id", nextTaskID );
 		} catch( Exception e ) {
-			nextTaskID = "caught exception";
+			//StoreValue( "task_id", "0" );
 		}
-		EventDispatcher.dispatchEvent( this, "GotNextTask", responseCode, response, nextTaskID );
+		EventDispatcher.dispatchEvent( this, "GotNextTask", responseCode, response );
 	}
 
 	//  //  //  //  //  //  //  //  //  // //  //  //  //
@@ -361,6 +361,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	// Event indicating that the get-user-profile request is complete
 	@SimpleEvent(description = "Event triggered when an answer is posted")
 	public void PostedAnswer( String responseCode, String response ) {
+		//StoreValue( "task_id", "0" );
 		EventDispatcher.dispatchEvent( this, "PostedAnswer", responseCode, response );
 	}
 
@@ -552,7 +553,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					activity.runOnUiThread(new Runnable() {
 					  @Override
 					  public void run() {
-						  GotNextTask( Integer.toString(responseCode), response, "dummy" );
+						  GotNextTask( Integer.toString(responseCode), response );
 					  }
 					});
 				} else if( cmd.equals("postanswer") ) {
