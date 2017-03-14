@@ -57,7 +57,6 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	private static final String base_acct_url = "http://crowdcrafting.org/account/";
 	private static final String base_api_url = "http://crowdcrafting.org/api/";
 
-	private static final int H_APIKEY   = 1;
 	private static final int H_SESSION  = 2;
 	private static final int H_CSRF     = 4;
 	private static final int H_REMEMBER = 8;
@@ -118,18 +117,6 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	@SimpleProperty
 	public void RememberToken( String x ) {
 		StoreValue( "remember_token", x );
-	}
-
-	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
-		description = "The value of the API Key")
-	public String ApiKey() {
-		return GetValue( "api_key", "none" );
-	}
-	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
-		defaultValue = "")
-	@SimpleProperty
-	public void ApiKey( String x ) {
-		StoreValue( "api_key", x );
 	}
 
 	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
