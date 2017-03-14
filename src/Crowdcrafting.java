@@ -321,8 +321,8 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 
 	// Event indicating that the get-user-profile request is complete
 	@SimpleEvent(description = "Event triggered when the next task is retrieved")
-	public void GotNextTask( String responseCode, String response ) {
-		String nextTaskID = "error";
+	public void GotNextTask( String responseCode, String response, String nextTaskID ) {
+		nextTaskID = "error";
 		try {
 			JSONObject obj = new JSONObject(response);
 			nextTaskID = String.valueOf( obj.getInt("id") );
@@ -552,7 +552,7 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 					activity.runOnUiThread(new Runnable() {
 					  @Override
 					  public void run() {
-						  GotNextTask( Integer.toString(responseCode), response );
+						  GotNextTask( Integer.toString(responseCode), response, "dummy" );
 					  }
 					});
 				} else if( cmd.equals("postanswer") ) {
