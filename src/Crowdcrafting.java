@@ -322,12 +322,12 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	// Event indicating that the get-user-profile request is complete
 	@SimpleEvent(description = "Event triggered when the next task is retrieved")
 	public void GotNextTask( String responseCode, String response ) {
-		String nextTaskID = -1;
+		String nextTaskID = "error";
 		try {
 			JSONObject obj = new JSONObject(response);
 			nextTaskID = String.valueOf( obj.getInt("id") );
 		} catch( Exception e ) {
-			nextTaskID = -11;
+			nextTaskID = "caught exception";
 		}
 		EventDispatcher.dispatchEvent( this, "GotNextTask", responseCode, response, nextTaskID );
 	}
