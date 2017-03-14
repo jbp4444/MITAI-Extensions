@@ -11,8 +11,8 @@ package com.google.appinventor.components.runtime;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.google.appinventor.components.annotations.UsesPermissions;
 
+import com.google.appinventor.components.annotations.UsesPermissions;
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
 import com.google.appinventor.components.annotations.PropertyCategory;
@@ -27,6 +27,8 @@ import com.google.appinventor.components.runtime.util.AsynchUtil;
 import com.google.appinventor.components.runtime.util.JsonUtil;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
 import com.google.appinventor.components.runtime.errors.YailRuntimeError;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -320,7 +322,14 @@ public final class Crowdcrafting extends AndroidNonvisibleComponent {
 	// Event indicating that the get-user-profile request is complete
 	@SimpleEvent(description = "Event triggered when the next task is retrieved")
 	public void GotNextTask( String responseCode, String response ) {
-		EventDispatcher.dispatchEvent( this, "GotNextTask", responseCode, response );
+		String nextTaskID = -1;
+		try {
+			JSONObject obj = new JSONObject(response);
+			nextTaskID = String.valueOf( obj.getInt("id") );
+		} catch( Exception e ) {
+			nextTaskID = -11;
+		}
+		EventDispatcher.dispatchEvent( this, "GotNextTask", responseCode, response, nextTaskID );
 	}
 
 	//  //  //  //  //  //  //  //  //  // //  //  //  //
