@@ -53,7 +53,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 			rtn = (Object)maxval;
 		} else if( objList[0] instanceof Integer ) {
 			int maxval = Integer.MIN_VALUE;
-			for( int v : (int[])objList ) {
+			for( int v : (Integer[])objList ) {
 				if( v > maxval ) {
 					maxval = v;
 				}
@@ -61,7 +61,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 			rtn = (Object)maxval;
 		} else if( objList[0] instanceof Float ) {
 			float maxval = Float.MIN_VALUE;
-			for( int v : (float[])objList ) {
+			for( float v : (Float[])objList ) {
 				if( v > maxval ) {
 					maxval = v;
 				}
