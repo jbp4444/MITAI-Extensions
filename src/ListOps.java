@@ -38,40 +38,19 @@ public final class ListOps extends AndroidNonvisibleComponent {
 		super( container.$form() );
 	}
 
-	@SimpleFunction( description="Return max of a list" )
-	public Object ListMax( YailList itemList ) {
-		Object rtn;
-		Object[] objList = itemList.toArray();
+	@SimpleFunction( description="Return max of a list of strings" )
+	public String StringListMax( YailList itemList ) {
+		String rtn = "Error - can't determine type";
+		String maxval = "";
+		String[] objList = itemList.toStringArray();
 
-		if( objList[0] instanceof String ) {
-			String maxval = "";
-			for( String v : (String[])objList ) {
-				if( v.compareTo(maxval) > 0 ) {
-					maxval = v;
-				}
+		for( String v : (String[])objList ) {
+			if( v.compareTo(maxval) > 0 ) {
+				maxval = v;
 			}
-			rtn = (Object)maxval;
-		} else if( objList[0] instanceof Integer ) {
-			int maxval = Integer.MIN_VALUE;
-			for( int v : (Integer[])objList ) {
-				if( v > maxval ) {
-					maxval = v;
-				}
-			}
-			rtn = (Object)maxval;
-		} else if( objList[0] instanceof Float ) {
-			float maxval = Float.MIN_VALUE;
-			for( float v : (Float[])objList ) {
-				if( v > maxval ) {
-					maxval = v;
-				}
-			}
-			rtn = (Object)maxval;
-		} else {
-			rtn = (Object)"Error - can't determine type";
 		}
 
-		return( rtn );
+		return( maxval );
 	}
 
 }
