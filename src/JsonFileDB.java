@@ -8,6 +8,8 @@
 
 package com.google.appinventor.components.runtime;
 
+import android.app.Activity;
+
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
 import com.google.appinventor.components.annotations.PropertyCategory;
@@ -42,6 +44,7 @@ import org.json.JSONException;
 public class JsonFileDB extends AndroidNonvisibleComponent {
 
   public static final int VERSION = 1;
+  private final Activity activity;
   private static String valueIfTagNotThere = "__NULL__";
   private JSONObject mainDB;
   public static String status = "Not initialized";
@@ -49,6 +52,7 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
 
   public JsonFileDB(ComponentContainer container) {
     super(container.$form());
+	activity = container.$context();
   }
 
   //private void readJsonFile( String filename ) throws Exception {
