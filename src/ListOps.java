@@ -16,15 +16,12 @@ import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.PropertyTypeConstants;
-import com.google.appinventor.components.runtime.errors.YailRuntimeError;
+import com.google.appinventor.components.runtime.util.YailList;
 
 import android.os.Environment;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
-
+import java.lang.Number;
+import java.lang.Integer;
 
 @DesignerComponent(version = ListOps.VERSION,
     description = "Provides list operations (sort, min, max) to MIT-AI/Thunkable apps",
@@ -48,13 +45,13 @@ public final class ListOps extends AndroidNonvisibleComponent {
 		if( objList[0] instanceof String ) {
 			String maxval = "";
 			for( String v : (String[])objList ) {
-				if( v > maxval ) {
+				if( v.compareTo(maxval) > 0 ) {
 					maxval = v;
 				}
 			}
 			rtn = (Object)maxval;
 		} else if( objList[0] instanceof int ) {
-			int maxval = -99999;
+			int maxval = Integer.MIN_VALUE;
 			for( int v : (int[])objList ) {
 				if( v > maxval ) {
 					maxval = v;
