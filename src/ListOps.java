@@ -22,6 +22,7 @@ import android.os.Environment;
 
 import java.lang.Number;
 import java.lang.Integer;
+import java.lang.Float;
 
 @DesignerComponent(version = ListOps.VERSION,
     description = "Provides list operations (sort, min, max) to MIT-AI/Thunkable apps",
@@ -50,7 +51,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 				}
 			}
 			rtn = (Object)maxval;
-		} else if( objList[0] instanceof int ) {
+		} else if( objList[0] instanceof Integer ) {
 			int maxval = Integer.MIN_VALUE;
 			for( int v : (int[])objList ) {
 				if( v > maxval ) {
@@ -58,6 +59,16 @@ public final class ListOps extends AndroidNonvisibleComponent {
 				}
 			}
 			rtn = (Object)maxval;
+		} else if( objList[0] instanceof Float ) {
+			float maxval = Float.MIN_VALUE;
+			for( int v : (float[])objList ) {
+				if( v > maxval ) {
+					maxval = v;
+				}
+			}
+			rtn = (Object)maxval;
+		} else {
+			rtn = (Object)"Error - can't determine type";
 		}
 
 		return( rtn );
