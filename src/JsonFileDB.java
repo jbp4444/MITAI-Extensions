@@ -73,6 +73,18 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
     return new String(altstatus);
   }
 
+  @SimpleProperty(category = PropertyCategory.BEHAVIOR,
+	  description = "The default value if tag is not present")
+  public String DefaultValueIfTagNotThere() {
+	  return valueIfTagNotThere;
+  }
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+	  defaultValue = "")
+  @SimpleProperty
+  public void DefaultValueIfTagNotThere( String x ) {
+	  valueIfTagNotThere = x;
+  }
+
   @SimpleFunction( description="Load the DB from a JSON file" )
   public void LoadDBFile( final String filename ) {
 	status = "Starting db-initialization";
