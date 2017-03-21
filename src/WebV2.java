@@ -1004,7 +1004,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
 			//ArrayList<String> newitem = new ArrayList(2);
 			//newitem.add(0,hdr_type);
 			//newitem.add(1,hdr_value);
-			newobj.add( hdr_type + hdr_value );
+			newobj.add( hdr_type + "::" + hdr_value );
 		}
 
 		i++;
@@ -1013,7 +1013,7 @@ public class WebV2 extends AndroidNonvisibleComponent implements Component {
 			break;
 		}
 	}
-	responseHeaders = YailList.makeList(newobj);
+	responseHeaders = YailList.makeList((List)newobj);
 
     if (allowCookies && cookieHandler != null) {
       try {
