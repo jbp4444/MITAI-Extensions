@@ -19,6 +19,8 @@ import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
 import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 
+import android.os.Environment;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -33,7 +35,6 @@ import java.util.regex.Pattern;
     category = ComponentCategory.EXTENSION,
     nonVisible = true,
     iconName = "images/extension.png")
-@UsesPermissions(permissionNames = "android.permission.INTERNET")
 @SimpleObject( external=true )
 public final class ListOps extends AndroidNonvisibleComponent {
 	public static final int VERSION = 1;
@@ -50,15 +51,15 @@ public final class ListOps extends AndroidNonvisibleComponent {
 
 		if( objList[0] instanceof String ) {
 			String maxval = "";
-			for( String v : (String)objList ) {
+			for( String v : (String[])objList ) {
 				if( v > maxval ) {
 					maxval = v;
 				}
 			}
 			rtn = (Object)maxval;
 		} else if( objList[0] instanceof int ) {
-			int maxval = "";
-			for( int v : (int)objList ) {
+			int maxval = -99999;
+			for( int v : (int[])objList ) {
 				if( v > maxval ) {
 					maxval = v;
 				}
