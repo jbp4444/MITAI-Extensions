@@ -14,11 +14,13 @@ import com.google.appinventor.components.annotations.PropertyCategory;
 import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.SimpleProperty;
+import com.google.appinventor.components.annotations.SimpleEvent;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 import com.google.appinventor.components.runtime.util.JsonUtil;
 import com.google.appinventor.components.runtime.util.FileUtil;
+import com.google.appinventor.components.runtime.util.AsynchUtil;
 
 import android.os.Environment;
 
@@ -56,6 +58,33 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
   //  mainDB = new JSONObject(contents);
   //}
 
+
+  @SimpleFunction( description="Return status info" )
+  public String GetStatus() {
+    return new String(status);
+  }
+
+  @SimpleFunction( description="Return alt-status info" )
+  public String GetAltStatus() {
+    return new String(altstatus);
+  }
+
+  @SimpleFunction( description="Load the DB from a JSON file" )
+  public void LoadDBFile( final String filename ) {
+	status = "Starting db-initialization";
+	AsynchUtil.runAsynchronously(new Runnable() {
+		@Override
+		public void run() {
+			try {
+				status = "Initializing DB";
+				readJsonFile( filename );
+			} catch( Exception e ) {
+				form.dispatchErrorOccurredEvent( JsonFileDB.this, "login", 9901 );
+			}
+		}
+	});
+  }
+
   // borrowing heavily from File component, ReadFrom
   private void readJsonFile( String filename ) throws Exception {
     String fullFilename;
@@ -70,31 +99,21 @@ public class JsonFileDB extends AndroidNonvisibleComponent {
     status = "FileUtil.readfile";
     byte b[] = FileUtil.readFile( fullFilename );
     status = "new String";
-    String contents = new String(b,"utf-8");
+    final String contents = new String(b,"utf-8");
     status = contents;
     mainDB = new JSONObject(contents);
     altstatus = "mainDB is initialized";
+	activity.runOnUiThread(new Runnable() {
+	  @Override
+	  public void run() {
+		  InitializationComplete();
+	  }
+	});
   }
 
-  @SimpleFunction( description="Return status info" )
-  public String GetStatus() {
-    return new String(status);
-  }
-
-  @SimpleFunction( description="Return alt-status info" )
-  public String GetAltStatus() {
-    return new String(altstatus);
-  }
-
-  @SimpleFunction( description="Load the DB from a JSON file" )
-  public void LoadDBFile( final String filename ) {
-    try {
-      status = "Initializing DB";
-      readJsonFile( filename );
-    } catch( Exception e ) {
-      // TODO: throw an error?
-      //status = "Could not initialize DB";
-    }
+  @SimpleEvent(description = "Event triggered when the db-file is read")
+  public void InitializationComplete() {
+	  EventDispatcher.dispatchEvent( this, "InitializationComplete" );
   }
 
   @SimpleFunction( description="Get a value from a level-1 key in the database" )
