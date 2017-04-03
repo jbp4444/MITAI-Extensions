@@ -81,4 +81,26 @@ public final class ListOps extends AndroidNonvisibleComponent {
 		return( minval );
 	}
 
+	@SimpleFunction( description="Return a sorted list of strings" )
+	public String StringSort( YailList itemList ) {
+		String[] objList = itemList.toStringArray();
+		int n = objList.length;
+
+		// flag that the last_index is no longer valid
+		last_index = -1;
+
+		// simple insertion sort
+		for( int i=1; i<n; i++ ) {
+			String x = objList[i];
+			int j = i - 1;
+			while( (j>=0) and (objList[j].compareTo(x)>0) ) {
+				objList[j+1] = objList[j];
+				j = j - 1;
+			}
+			objList[j+1] = x;
+		}
+
+		return( minval );
+	}
+
 }
