@@ -40,21 +40,19 @@ public final class ListOps extends AndroidNonvisibleComponent {
 		super( container.$form() );
 	}
 
-	@SimpleProperty(category = PropertyCategory.BEHAVIOR,
-  	  description = "The default value if tag is not present")
-    public int LastIndex() {
-  	  return last_index;
-    }
+	@SimpleFunction( description = "The list-index of the last operation" )
+	public int LastIndex() {
+		return last_index;
+	}
 
 	@SimpleFunction( description="Return max of a list of strings" )
 	public String StringListMax( YailList itemList ) {
-		String rtn = "Error - can't determine type";
 		String[] objList = itemList.toStringArray();
 		String maxval;
 
 		maxval = objList[0];
 		last_index = 0;
-		for( int i=1; i<objList.size(); i++ ) {
+		for( int i=1; i<objList.length; i++ ) {
 			String v = objList[i];
 			if( v.compareTo(maxval) > 0 ) {
 				last_index = i;
@@ -66,14 +64,14 @@ public final class ListOps extends AndroidNonvisibleComponent {
 	}
 
 	@SimpleFunction( description="Return min of a list of strings" )
-	public String StringListMax( YailList itemList ) {
-		String rtn = "Error - can't determine type";
+	public String StringListMin( YailList itemList ) {
 		String[] objList = itemList.toStringArray();
 		String minval;
 
 		minval = objList[0];
 		last_index = 0;
-		for( int i=1; i<objList.size(); i++ ) {
+		for( int i=1; i<objList.length; i++ ) {
+			String v = objList[i];
 			if( v.compareTo(minval) < 0 ) {
 				last_index = i;
 				minval = v;
