@@ -82,7 +82,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 	}
 
 	@SimpleFunction( description="Return a sorted list of strings" )
-	public YailList StringSort( YailList itemList ) {
+	public YailList MySimpleSort( YailList itemList ) {
 		String[] objList = itemList.toStringArray();
 		int n = objList.length;
 
