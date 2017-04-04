@@ -20,9 +20,6 @@ import com.google.appinventor.components.runtime.util.YailList;
 
 import android.os.Environment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;  
 import java.lang.Number;
 import java.lang.Integer;
 import java.lang.Float;
@@ -103,7 +100,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 			objList[j+1] = x;
 		}
 
-		return( new ArrayList<String>(Arrays.asList(objList)) );
+		return( YailList.makeList(objList) );
 	}
 
 }
