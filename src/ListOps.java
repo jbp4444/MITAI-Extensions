@@ -20,6 +20,7 @@ import com.google.appinventor.components.runtime.util.YailList;
 
 import android.os.Environment;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.Number;
@@ -84,7 +85,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 	}
 
 	@SimpleFunction( description="Return a sorted list of strings" )
-	public ArrayList<String> MySimpleSort( YailList itemList ) {
+	public List<String> MySimpleSort( YailList itemList ) {
 		String[] objList = itemList.toStringArray();
 		int n = objList.length;
 
@@ -102,7 +103,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 			objList[j+1] = x;
 		}
 
-		return( new ArrayList<String>( Arrays.asList(objList) );
+		return( new ArrayList<String>(Arrays.asList(objList)) );
 	}
 
 }
