@@ -18,6 +18,7 @@ import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.runtime.util.YailList;
 
+import android.app.Activity;
 import android.os.Environment;
 
 import java.util.List;
@@ -35,13 +36,14 @@ import java.lang.Float;
 @SimpleObject( external=true )
 public class ListOps extends AndroidNonvisibleComponent {
 	public static final int VERSION = 1;
+	private final Activity activity;
 
 	public static int last_index = -1;
-	public static List<String> sorted_list;
 
 	// Constructor
 	public ListOps( ComponentContainer container ) {
 		super( container.$form() );
+		activity = container.$context();
 	}
 
 	//SimpleFunction( description = "The list-index of the last operation" )
@@ -49,12 +51,6 @@ public class ListOps extends AndroidNonvisibleComponent {
 	public int LastIndex() {
 		return last_index;
 	}
-
-	@SimpleProperty(category = PropertyCategory.BEHAVIOR, description = "The last sorted list")
-	public List<String> LastSortedList() {
-		return sorted_list;
-	}
-
 
 	@SimpleFunction( description="Return max of a list of strings" )
 	public String StringListMax( YailList itemList ) {
@@ -93,8 +89,7 @@ public class ListOps extends AndroidNonvisibleComponent {
 	}
 
 	@SimpleFunction( description="Return a sorted list of strings" )
-	//public List<String> MySimpleSort( YailList itemList ) {
-	public void MySimpleSort( YailList itemList ) {
+	public List<String> MySimpleSort( YailList itemList ) {
 		String[] objList = itemList.toStringArray();
 		int n = objList.length;
 
@@ -102,7 +97,6 @@ public class ListOps extends AndroidNonvisibleComponent {
 		last_index = -1;
 
 		// simple insertion sort
-		if( 1==0 ) {
 		for( int i=1; i<n; i++ ) {
 			String x = objList[i];
 			int j = i - 1;
@@ -112,12 +106,8 @@ public class ListOps extends AndroidNonvisibleComponent {
 			}
 			objList[j+1] = x;
 		}
-		}
 
-		sorted_list = new ArrayList<String>(Arrays.asList(objList));
-
-		//return( new ArrayList<String>(Arrays.asList(objList)) );
-		return;
+		return( new ArrayList<String>(Arrays.asList(objList)) );
 	}
 
 }
