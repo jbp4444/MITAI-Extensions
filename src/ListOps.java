@@ -37,16 +37,24 @@ public final class ListOps extends AndroidNonvisibleComponent {
 	public static final int VERSION = 1;
 
 	public static int last_index = -1;
+	public static List<String> sorted_list;
 
 	// Constructor
 	public ListOps( ComponentContainer container ) {
 		super( container.$form() );
 	}
 
-	@SimpleFunction( description = "The list-index of the last operation" )
+	//SimpleFunction( description = "The list-index of the last operation" )
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR, description = "The list-index of the last operation")
 	public int LastIndex() {
 		return last_index;
 	}
+
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR, description = "The last sorted list")
+	public List<String> LastSortedList() {
+		return sorted_list;
+	}
+
 
 	@SimpleFunction( description="Return max of a list of strings" )
 	public String StringListMax( YailList itemList ) {
@@ -85,7 +93,8 @@ public final class ListOps extends AndroidNonvisibleComponent {
 	}
 
 	@SimpleFunction( description="Return a sorted list of strings" )
-	public List<String> MySimpleSort( YailList itemList ) {
+	//public List<String> MySimpleSort( YailList itemList ) {
+	public void MySimpleSort( YailList itemList ) {
 		String[] objList = itemList.toStringArray();
 		int n = objList.length;
 
@@ -103,7 +112,10 @@ public final class ListOps extends AndroidNonvisibleComponent {
 			objList[j+1] = x;
 		}
 
-		return( new ArrayList<String>(Arrays.asList(objList)) );
+		sorted_list = new ArrayList<String>(Arrays.asList(objList));
+
+		//return( new ArrayList<String>(Arrays.asList(objList)) );
+		return;
 	}
 
 }
