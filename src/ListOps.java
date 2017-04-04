@@ -33,7 +33,7 @@ import java.lang.Float;
     nonVisible = true,
     iconName = "images/extension.png")
 @SimpleObject( external=true )
-public final class ListOps extends AndroidNonvisibleComponent {
+public class ListOps extends AndroidNonvisibleComponent {
 	public static final int VERSION = 1;
 
 	public static int last_index = -1;
