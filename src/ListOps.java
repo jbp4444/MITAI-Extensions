@@ -102,6 +102,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 		last_index = -1;
 
 		// simple insertion sort
+		if( 1==0 ) {
 		for( int i=1; i<n; i++ ) {
 			String x = objList[i];
 			int j = i - 1;
@@ -110,6 +111,7 @@ public final class ListOps extends AndroidNonvisibleComponent {
 				j = j - 1;
 			}
 			objList[j+1] = x;
+		}
 		}
 
 		sorted_list = new ArrayList<String>(Arrays.asList(objList));
