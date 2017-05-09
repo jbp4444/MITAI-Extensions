@@ -164,11 +164,11 @@ public final class KvDb extends AndroidNonvisibleComponent {
 	}
 
 	@SimpleEvent( description="Event triggered after an error during connection" )
-    public void CommandError(String responseCode, String response ) {
-      // Invoke the application's "WebServiceError" event handler
-      // Log.w(LOG_TAG, "calling error event handler: " + message);
-      EventDispatcher.dispatchEvent(this, "CommandError", responseCode, response );
-    }
+	public void CommandError( String responseCode, String response ) {
+		// Invoke the application's "WebServiceError" event handler
+		// Log.w(LOG_TAG, "calling error event handler: " + message);
+		EventDispatcher.dispatchEvent(this, "CommandError", responseCode, response );
+	}
 
 	private static String getResponseContent(HttpURLConnection connection) throws IOException {
 		// Use the content encoding to convert bytes to characters.
@@ -256,18 +256,18 @@ public final class KvDb extends AndroidNonvisibleComponent {
 		if( (responseCode>=200) && (responseCode<300) ) {
 			last_status = "launching CommandSuccess event";
 			activity.runOnUiThread(new Runnable() {
-			  @Override
-			  public void run() {
-				  CommandSuccess( f_responseCode, f_response );
-			  }
+				@Override
+				public void run() {
+					CommandSuccess( f_responseCode, f_response );
+				}
 			});
 		} else {
 			last_status = "launching CommandError event";
 			activity.runOnUiThread(new Runnable() {
-			  @Override
-			  public void run() {
-				  CommandError( f_responseCode, f_response );
-			  }
+				@Override
+				public void run() {
+					CommandError( f_responseCode, f_response );
+				}
 			});
 
 		}
