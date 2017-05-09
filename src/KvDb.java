@@ -248,7 +248,7 @@ public final class KvDb extends AndroidNonvisibleComponent {
 		}
 
 		// Dispatch the event.
-		if( (responseCode>=200) and (responseCode<300) ) {
+		if( (responseCode>=200) && (responseCode<300) ) {
 			last_status = "launching CommandSuccess event";
 			activity.runOnUiThread(new Runnable() {
 			  @Override
