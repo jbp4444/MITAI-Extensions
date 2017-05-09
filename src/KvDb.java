@@ -216,8 +216,8 @@ public final class KvDb extends AndroidNonvisibleComponent {
 		HttpURLConnection cnx = (HttpURLConnection)url.openConnection();
 
 		// assume an error
-		final int responseCode = 400;
-		final String response = "error";
+		int responseCode = 400;
+		String response = "error";
 
 		if( cnx == null ) {
 			responseCode = 400;
