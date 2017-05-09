@@ -132,7 +132,7 @@ public final class KvDb extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					final String f_tag = tag;
+					final String f_tag = new String(tag);
 					String response = performRequest( "get", f_tag, null );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(KvDb.this, "GetConfigValue", 9902 );
@@ -147,8 +147,8 @@ public final class KvDb extends AndroidNonvisibleComponent {
 			@Override
 			public void run() {
 				try {
-					final String f_tag = tag;
-					final String f_value = value;
+					final String f_tag = new String(tag);
+					final String f_value = new String(value);
 					String response = performRequest( "set", f_tag, f_value );
 				} catch( Exception e ) {
 					form.dispatchErrorOccurredEvent(KvDb.this, "GetConfigValue", 9902 );
