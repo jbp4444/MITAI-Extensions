@@ -159,12 +159,12 @@ public final class KvDb extends AndroidNonvisibleComponent {
 
 	// Event indicating that the web/remote request is complete and successful
 	@SimpleEvent( description="Event triggered after successful get/set on remote web-server" )
-	public void CommandSuccess( String responseCode, String response ) {
+	public void CommandSuccess( String responseCode, Object response ) {
 		EventDispatcher.dispatchEvent( this, "CommandSuccess", responseCode, response );
 	}
 
 	@SimpleEvent( description="Event triggered after an error during connection" )
-	public void CommandError( String responseCode, String response ) {
+	public void CommandError( String responseCode, Object response ) {
 		// Invoke the application's "WebServiceError" event handler
 		// Log.w(LOG_TAG, "calling error event handler: " + message);
 		EventDispatcher.dispatchEvent(this, "CommandError", responseCode, response );
@@ -200,7 +200,7 @@ public final class KvDb extends AndroidNonvisibleComponent {
 	}
 
 	private String performRequest( String cmd, String tag, String value ) throws IOException {
-		String rtnval = "error";
+		String rtnval = "{\"status\":\"error\",\"statusCode\":400,\"info\":\"unknown error\"}";
 
 		String auth_token  = GetConfigValue( "auth_token", "none" );
 		String base_url = GetConfigValue( "base_url", "none" );
@@ -220,8 +220,9 @@ public final class KvDb extends AndroidNonvisibleComponent {
 		String response = "error";
 
 		if( cnx == null ) {
+			last_status = "cannot connect";
 			responseCode = 400;
-			response = "cannot connect";
+			response = "{\"status\":\"error\",\"statusCode\":400,\"info\":\"cannot connect\"}";
 		} else {
 			try {
 				cnx.setRequestMethod( "GET" );
@@ -253,12 +254,13 @@ public final class KvDb extends AndroidNonvisibleComponent {
 		// Dispatch the event.
 		final String f_response = new String(response);
 		final String f_responseCode = new String(Integer.toString(responseCode));
+		final Object f_responseObj = JsonToPairs( response );
 		if( (responseCode>=200) && (responseCode<300) ) {
 			last_status = "launching CommandSuccess event";
 			activity.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					CommandSuccess( f_responseCode, f_response );
+					CommandSuccess( f_responseCode, f_responseObj );
 				}
 			});
 		} else {
@@ -266,7 +268,7 @@ public final class KvDb extends AndroidNonvisibleComponent {
 			activity.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					CommandError( f_responseCode, f_response );
+					CommandError( f_responseCode, f_responseObj );
 				}
 			});
 
