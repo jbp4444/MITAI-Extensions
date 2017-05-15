@@ -6,7 +6,7 @@
 // borrowed from several java files in main-line AppInventor source
 // that code is Copyright 2011-2014 MIT, All rights reserved
 
-package com.google.appinventor.components.runtime;
+package foo.bar.appinventor;
 
 import android.app.Activity;
 import android.content.Context;

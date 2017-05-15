@@ -8,19 +8,22 @@
 
 package foo.bar.appinventor;
 
+import android.app.Activity;
+
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
 import com.google.appinventor.components.annotations.PropertyCategory;
 import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.SimpleProperty;
+import com.google.appinventor.components.annotations.SimpleEvent;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.PropertyTypeConstants;
+import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 import com.google.appinventor.components.runtime.util.JsonUtil;
 import com.google.appinventor.components.runtime.util.FileUtil;
 import com.google.appinventor.components.runtime.util.AsynchUtil;
 
-import android.app.Activity;
 import android.os.Environment;
 
 import java.util.ArrayList;
@@ -31,18 +34,19 @@ import java.io.File;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-@DesignerComponent( version = JsonFileDB.VERSION,
-    description = "JsonFileDB is a non-visible component that loads JSON data from " +
-    "a file on the phone's SD card and presents it as a hash table.</p>",
+@DesignerComponent( version = GamebookLib.VERSION,
+    description = "GamebookLib is a non-visible component that provide gamebook functionality "+
+	"to Thunkable/MITAI.  It loads JSON data from " +
+    "a file on the phone's SD card and presents it as a hash table.  It provides an inventory "+
+	"as well as ways to test conditions on the inventory.</p>",
     category = ComponentCategory.EXTENSION,
     nonVisible = true,
     iconName = "images/extension.png")
 @SimpleObject( external=true )
-public class JsonFileDB extends AndroidNonvisibleComponent {
+public class GamebookLib extends AndroidNonvisibleComponent {
 
   public static final int VERSION = 1;
   private final Activity activity;
-
   private static String valueIfTagNotThere = "__NULL__";
   private JSONObject mainDB;
   public static String status = "Not initialized";

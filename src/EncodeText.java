@@ -6,7 +6,7 @@
 // borrowed from several java files in main-line AppInventor source
 // that code is Copyright 2011-2014 MIT, All rights reserved
 
-package com.google.appinventor.components.runtime;
+package foo.bar.appinventor;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
@@ -21,6 +21,7 @@ import com.google.appinventor.components.runtime.errors.YailRuntimeError;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.digest.Crypt;
 
 // the AppInventor class ...
 
