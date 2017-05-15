@@ -8,6 +8,8 @@
 
 package foo.bar.appinventor;
 
+import com.google.appinventor.components.runtime.*;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;

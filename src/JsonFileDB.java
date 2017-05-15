@@ -8,6 +8,8 @@
 
 package foo.bar.appinventor;
 
+import com.google.appinventor.components.runtime.*;
+
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
 import com.google.appinventor.components.annotations.PropertyCategory;
